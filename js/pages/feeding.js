@@ -15,64 +15,85 @@ async function FeedingPage() {
         <div><strong>${formatDate(log.timestamp)}</strong> - ${log.mealType || 'Приём'}</div>
         <div>${foodNames.join(', ')}</div>
         <div>${log.note || ''}</div>
-        <button onclick="deleteFeeding(${log.id})">Удалить</button>
+        <button class="btn-danger" data-delete-feeding="${log.id}">Удалить</button>
       </div>
     `;
   }
   
   return `
     <h2>Журнал кормлений</h2>
-    <button class="btn" onclick="openAddFeedingModal()">Добавить запись</button>
+    <button class="btn" id="open-add-feeding-btn">Добавить запись</button>
     <div id="feeding-list">${logHtml}</div>
     <div id="add-feeding-modal" class="modal">
-      <!-- Здесь будет форма добавления, динамически заполняемая -->
+      <div class="modal-content">
+        <h3>Новое кормление</h3>
+        <form id="feeding-form">
+          <div class="form-group">
+            <label>Дата и время</label>
+            <input type="datetime-local" name="timestamp" required>
+          </div>
+          <div class="form-group">
+            <label>Тип приёма</label>
+            <select name="mealType">
+              <option value="breakfast">Завтрак</option>
+              <option value="lunch">Обед</option>
+              <option value="snack">Полдник</option>
+              <option value="dinner">Ужин</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Продукты</label>
+            <div id="food-checkboxes"></div>
+          </div>
+          <div class="form-group">
+            <label>Заметка</label>
+            <textarea name="note"></textarea>
+          </div>
+          <button type="submit" class="btn">Сохранить</button>
+          <button type="button" class="btn-outline" id="close-add-feeding-btn">Отмена</button>
+        </form>
+      </div>
     </div>
   `;
 }
 
-// Глобальные функции для модального окна добавления кормления
-window.openAddFeedingModal = async function() {
-  const modal = document.getElementById('add-feeding-modal');
-  const foods = await getAll('foods');
-  modal.innerHTML = `
-    <div class="modal-content">
-      <h3>Новое кормление</h3>
-      <form id="feeding-form">
-        <div class="form-group">
-          <label>Дата и время</label>
-          <input type="datetime-local" name="timestamp" required>
-        </div>
-        <div class="form-group">
-          <label>Тип приёма</label>
-          <select name="mealType">
-            <option value="breakfast">Завтрак</option>
-            <option value="lunch">Обед</option>
-            <option value="snack">Полдник</option>
-            <option value="dinner">Ужин</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Продукты</label>
-          <div id="food-checkboxes">
-            ${foods.map(f => `<label><input type="checkbox" name="food_${f.id}"> ${f.name}</label><br>`).join('')}
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Заметка</label>
-          <textarea name="note"></textarea>
-        </div>
-        <button type="submit" class="btn">Сохранить</button>
-        <button type="button" class="btn-outline" onclick="closeAddFeedingModal()">Отмена</button>
-      </form>
-    </div>
-  `;
-  modal.classList.add('active');
+function initFeedingPage() {
+  // Открытие модалки
+  document.getElementById('open-add-feeding-btn').addEventListener('click', openAddFeedingModal);
+  // Закрытие модалки
+  document.getElementById('close-add-feeding-btn').addEventListener('click', closeAddFeedingModal);
+  // Обработчик формы
   document.getElementById('feeding-form').addEventListener('submit', handleAddFeeding);
-};
+  // Делегирование для кнопок удаления
+  document.getElementById('feeding-list').addEventListener('click', (e) => {
+    if (e.target.matches('[data-delete-feeding]')) {
+      const id = parseInt(e.target.getAttribute('data-delete-feeding'));
+      deleteFeeding(id);
+    }
+  });
+}
 
-window.closeAddFeedingModal = function() {
+async function openAddFeedingModal() {
+  const modal = document.getElementById('add-feeding-modal');
+  const container = document.getElementById('food-checkboxes');
+  container.innerHTML = '';
+  const foods = await getAll('foods');
+  foods.forEach(f => {
+    const label = document.createElement('label');
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.name = `food_${f.id}`;
+    label.appendChild(cb);
+    label.appendChild(document.createTextNode(' ' + f.name));
+    container.appendChild(label);
+    container.appendChild(document.createElement('br'));
+  });
+  modal.classList.add('active');
+}
+
+function closeAddFeedingModal() {
   document.getElementById('add-feeding-modal').classList.remove('active');
-};
+}
 
 async function handleAddFeeding(e) {
   e.preventDefault();
@@ -81,7 +102,6 @@ async function handleAddFeeding(e) {
   const mealType = form.mealType.value;
   const note = form.note.value;
   
-  // Собираем выбранные продукты
   const checkboxes = form.querySelectorAll('[name^="food_"]:checked');
   const foodIds = Array.from(checkboxes).map(cb => parseInt(cb.name.split('_')[1]));
   
@@ -102,7 +122,7 @@ async function handleAddFeeding(e) {
     await addRecord('feedingEntries', {
       logId,
       foodId,
-      quantity: 0, // упрощено
+      quantity: 0,
       texture: 'puree'
     });
   }
@@ -111,12 +131,11 @@ async function handleAddFeeding(e) {
   window.location.hash = '#feeding';
 }
 
-window.deleteFeeding = async function(logId) {
+async function deleteFeeding(logId) {
   if (confirm('Удалить запись?')) {
     await deleteRecord('feedingLogs', logId);
-    // удалить связанные entries
     const entries = await getByIndex('feedingEntries', 'logId', logId);
     for (let e of entries) await deleteRecord('feedingEntries', e.id);
-    location.reload();
+    window.location.hash = '#feeding';
   }
-};
+}
