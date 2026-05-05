@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>ПрикормТрекер с напоминаниями</title>
+  <title>ПрикормТрекер | Иллюстрации и сетка продуктов</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -14,7 +14,7 @@
       padding: 24px 16px;
       color: #1a2c3e;
     }
-    .app-container { max-width: 1200px; margin: 0 auto; }
+    .app-container { max-width: 1300px; margin: 0 auto; }
     .two-columns { display: flex; gap: 24px; flex-wrap: wrap; }
     .left-col { flex: 2; min-width: 280px; }
     .right-col { flex: 1.2; min-width: 260px; }
@@ -68,19 +68,84 @@
     .product-tag.good { background: #e1f3e6; color: #226e44; border-left: 3px solid #2b7a4b; }
     .product-tag.bad { background: #ffe6e2; color: #bc5a4a; border-left: 3px solid #d96c5e; }
     .empty-state { text-align: center; padding: 40px 20px; background: #fefef9; border-radius: 48px; color: #86a394; }
+    
+    /* НОВЫЙ СТИЛЬ ДЛЯ СЕТКИ КАТЕГОРИЙ */
+    .catalog-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+    .category-block {
+      background: #fefefe;
+      border-radius: 28px;
+      padding: 1rem 1.2rem 1.2rem 1.2rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+      border: 1px solid #ecf3ef;
+    }
+    .category-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #2b5a42;
+      border-bottom: 2px dashed #d9e8e0;
+      padding-bottom: 8px;
+    }
+    .category-icon {
+      font-size: 1.8rem;
+      width: 48px;
+      text-align: center;
+    }
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+    }
+    .product-card {
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid #eef2ef;
+      transition: 0.1s;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .product-info {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .product-name {
+      font-weight: 700;
+      font-size: 1rem;
+      color: #1f3e30;
+    }
+    .product-time {
+      font-size: 0.7rem;
+      color: #7c9b8b;
+    }
+    .product-status {
+      font-size: 0.7rem;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 30px;
+      white-space: nowrap;
+    }
     .accordion { background: #ffffff; border-radius: 28px; margin-top: 1rem; overflow: hidden; border: 1px solid #e9f0ec; }
     .accordion-header { background: #f9fdfa; padding: 1rem 1.5rem; font-weight: 700; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; color: #2b7a4b; }
     .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; padding: 0 1.5rem; }
-    .accordion-content.open { max-height: 800px; padding: 1rem 1.5rem 1.5rem; transition: max-height 0.4s ease-in; }
-    .product-table { width: 100%; border-collapse: collapse; }
-    .product-table th, .product-table td { text-align: left; padding: 12px 8px; border-bottom: 1px solid #eef2f0; vertical-align: top; }
-    .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 30px; font-size: 0.75rem; font-weight: 500; }
-    .status-introduced-ok { background: #e0f3e4; color: #1b6e3f; }
-    .status-introduced-bad { background: #fee2dd; color: #bc4e3a; }
-    .status-not { background: #f1f3f4; color: #7f8e86; }
+    .accordion-content.open { max-height: 2000px; padding: 1rem 1.5rem 1.5rem; transition: max-height 0.5s ease-in; }
     footer { text-align: center; font-size: 0.7rem; color: #98afa2; margin-top: 30px; }
     hr { margin: 12px 0; border: 0; height: 1px; background: #e2ece6; }
-    @media (max-width: 760px) { .two-columns { flex-direction: column; } .profile-grid { flex-direction: column; } }
+    @media (max-width: 760px) {
+      .two-columns { flex-direction: column; }
+      .profile-grid { flex-direction: column; }
+      .products-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -88,12 +153,12 @@
   <!-- шапка -->
   <div class="card">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-      <div><h1><i class="fas fa-baby-carriage"></i> ПрикормТрекер+</h1><div class="subhead">Персональные напоминания и справочник</div></div>
+      <div><h1><i class="fas fa-baby-carriage"></i> ПрикормТрекер+</h1><div class="subhead">С напоминаниями и иллюстрациями категорий</div></div>
       <div class="stats-row" id="statsArea"></div>
     </div>
   </div>
 
-  <!-- блок профиля ребёнка -->
+  <!-- профиль ребёнка -->
   <div class="card">
     <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 16px;"><i class="fas fa-child"></i> <span style="font-weight: 600;">О ребёнке</span></div>
     <div class="profile-grid">
@@ -103,7 +168,7 @@
     </div>
   </div>
 
-  <!-- блок напоминания -->
+  <!-- напоминание -->
   <div id="reminderBlock" class="reminder-card" style="display: none;">
     <div style="display: flex; gap: 10px; align-items: center;"><i class="fas fa-bell" style="font-size: 1.4rem; color:#2b7a4b;"></i> <strong style="font-size: 1.1rem;">Напоминание</strong></div>
     <div id="reminderText" style="margin-top: 8px;"></div>
@@ -127,6 +192,7 @@
     </div>
   </div>
 
+  <!-- две колонки -->
   <div class="two-columns">
     <div class="left-col">
       <div class="filter-bar"><button data-filter="today" class="filter-btn active" id="filterTodayBtn"><i class="fas fa-sun"></i> Сегодня</button><button data-filter="all" class="filter-btn" id="filterAllBtn"><i class="fas fa-list"></i> Все записи</button></div>
@@ -137,11 +203,17 @@
     </div>
   </div>
 
+  <!-- СПРАВОЧНИК С ИЛЛЮСТРАЦИЯМИ И СЕТКОЙ -->
   <div class="accordion" id="catalogAccordion">
-    <div class="accordion-header" id="catalogHeader"><span><i class="fas fa-book-open"></i> Справочник продуктов (категории + время введения)</span><i class="fas fa-chevron-down" id="accordionIcon"></i></div>
-    <div class="accordion-content" id="catalogContent"><div style="overflow-x: auto;"><table class="product-table"><thead><tr><th>Категория</th><th>Продукт</th><th>Рекомендуемое время</th><th>Статус</th></tr></thead><tbody id="catalogTableBody"></tbody></table></div><div class="subhead" style="margin-top: 12px;">* Статус на основе ваших записей.</div></div>
+    <div class="accordion-header" id="catalogHeader"><span><i class="fas fa-book-open"></i> Справочник продуктов (с иллюстрациями, сетка)</span><i class="fas fa-chevron-down" id="accordionIcon"></i></div>
+    <div class="accordion-content" id="catalogContent">
+      <div id="catalogGridContainer" class="catalog-grid">
+        <!-- сюда динамически загружаются категории с иконками и карточками продуктов -->
+      </div>
+      <div class="subhead" style="margin-top: 12px;">* Статус на основе ваших записей. Категории расположены в виде сетки с карточками продуктов.</div>
+    </div>
   </div>
-  <footer><i class="fas fa-heart"></i> Данные сохраняются локально. Напоминание подскажет, что ввести следующим</footer>
+  <footer><i class="fas fa-heart"></i> Данные сохраняются локально, иллюстрации категорий — фрукты, овощи, орехи и злаки</footer>
 </div>
 
 <script>
@@ -151,25 +223,25 @@
   let currentEditId = null;
   let currentFilter = "today";
 
-  // Справочник
+  // Справочник продуктов с иллюстрациями категорий (иконки Font Awesome)
   const productCatalog = [
-    { category: "Фрукты", product: "Яблоко", timeIntro: "с 5-6 месяцев" },
-    { category: "Фрукты", product: "Груша", timeIntro: "с 5-6 месяцев" },
-    { category: "Фрукты", product: "Банан", timeIntro: "с 5-6 месяцев" },
-    { category: "Фрукты", product: "Персик", timeIntro: "с 7 месяцев" },
-    { category: "Фрукты", product: "Абрикос", timeIntro: "с 8 месяцев" },
-    { category: "Овощи", product: "Кабачок", timeIntro: "с 4-5 месяцев" },
-    { category: "Овощи", product: "Брокколи", timeIntro: "с 5 месяцев" },
-    { category: "Овощи", product: "Цветная капуста", timeIntro: "с 5 месяцев" },
-    { category: "Овощи", product: "Морковь", timeIntro: "с 6 месяцев" },
-    { category: "Овощи", product: "Тыква", timeIntro: "с 6 месяцев" },
-    { category: "Овощи", product: "Картофель", timeIntro: "с 6 месяцев" },
-    { category: "Орехи и злаки", product: "Грецкий орех", timeIntro: "после 12 месяцев" },
-    { category: "Орехи и злаки", product: "Миндаль", timeIntro: "после 12 месяцев" },
-    { category: "Орехи и злаки", product: "Фундук", timeIntro: "после 12 месяцев" },
-    { category: "Орехи и злаки", product: "Овсяная каша", timeIntro: "с 6 месяцев" },
-    { category: "Орехи и злаки", product: "Гречневая каша", timeIntro: "с 5 месяцев" },
-    { category: "Орехи и злаки", product: "Рисовая каша", timeIntro: "с 5 месяцев" }
+    { category: "Фрукты", product: "Яблоко", timeIntro: "с 5-6 мес", icon: "fa-apple-alt" },
+    { category: "Фрукты", product: "Груша", timeIntro: "с 5-6 мес", icon: "fa-apple-alt" },
+    { category: "Фрукты", product: "Банан", timeIntro: "с 5-6 мес", icon: "fa-apple-alt" },
+    { category: "Фрукты", product: "Персик", timeIntro: "с 7 мес", icon: "fa-apple-alt" },
+    { category: "Фрукты", product: "Абрикос", timeIntro: "с 8 мес", icon: "fa-apple-alt" },
+    { category: "Овощи", product: "Кабачок", timeIntro: "с 4-5 мес", icon: "fa-carrot" },
+    { category: "Овощи", product: "Брокколи", timeIntro: "с 5 мес", icon: "fa-carrot" },
+    { category: "Овощи", product: "Цветная капуста", timeIntro: "с 5 мес", icon: "fa-carrot" },
+    { category: "Овощи", product: "Морковь", timeIntro: "с 6 мес", icon: "fa-carrot" },
+    { category: "Овощи", product: "Тыква", timeIntro: "с 6 мес", icon: "fa-carrot" },
+    { category: "Овощи", product: "Картофель", timeIntro: "с 6 мес", icon: "fa-carrot" },
+    { category: "Орехи и злаки", product: "Грецкий орех", timeIntro: "после 12 мес", icon: "fa-seedling" },
+    { category: "Орехи и злаки", product: "Миндаль", timeIntro: "после 12 мес", icon: "fa-seedling" },
+    { category: "Орехи и злаки", product: "Фундук", timeIntro: "после 12 мес", icon: "fa-seedling" },
+    { category: "Орехи и злаки", product: "Овсяная каша", timeIntro: "с 6 мес", icon: "fa-seedling" },
+    { category: "Орехи и злаки", product: "Гречневая каша", timeIntro: "с 5 мес", icon: "fa-seedling" },
+    { category: "Орехи и злаки", product: "Рисовая каша", timeIntro: "с 5 мес", icon: "fa-seedling" }
   ];
 
   // DOM
@@ -192,7 +264,7 @@
   const filterTodayBtn = document.getElementById("filterTodayBtn");
   const filterAllBtn = document.getElementById("filterAllBtn");
   const productsSummaryDiv = document.getElementById("productsSummary");
-  const catalogTableBody = document.getElementById("catalogTableBody");
+  const catalogGridContainer = document.getElementById("catalogGridContainer");
   const accordionHeader = document.getElementById("catalogHeader");
   const accordionContent = document.getElementById("catalogContent");
   const accordionIcon = document.getElementById("accordionIcon");
@@ -211,7 +283,7 @@
     const birthday = childBirthdayInput.value;
     if (!name && !birthday) return;
     localStorage.setItem(PROFILE_KEY, JSON.stringify({ name, birthday }));
-    updateReminder(); // обновить напоминание после сохранения профиля
+    updateReminder();
   }
   function getChildAgeMonths() {
     const birthday = childBirthdayInput.value;
@@ -223,7 +295,6 @@
     if (today.getDate() < birthDate.getDate()) months--;
     return months;
   }
-  // получить список уже введённых продуктов (игнорируя плохую реакцию? для рекомендации важно, что пробовали)
   function getIntroducedProductsSet() {
     const introduced = new Set();
     feedingEntries.forEach(entry => {
@@ -232,7 +303,6 @@
     });
     return introduced;
   }
-  // рекомендация: продукт из справочника, который ещё не введён, и возраст >= рекомендованного (парсим минимальный возраст)
   function parseMinAge(ageStr) {
     const match = ageStr.match(/(\d+)/);
     return match ? parseInt(match[1]) : 0;
@@ -244,26 +314,24 @@
     const available = productCatalog.filter(p => {
       const minAge = parseMinAge(p.timeIntro);
       if (minAge > ageMonths) return false;
-      const alreadyIntroduced = introduced.has(p.product.toLowerCase());
-      return !alreadyIntroduced;
+      return !introduced.has(p.product.toLowerCase());
     });
     if (available.length === 0) return { hasProfile: true, message: "Все подходящие по возрасту продукты уже введены! Отлично!" };
-    // выбираем первый, можно сортировать по возрасту введения
     available.sort((a,b) => parseMinAge(a.timeIntro) - parseMinAge(b.timeIntro));
     const next = available[0];
     return { hasProfile: true, product: next.product, time: next.timeIntro, message: `${next.product} (рекомендуется ${next.timeIntro})` };
   }
   function updateReminder() {
     const rec = getRecommendation();
+    const childName = childNameInput.value.trim();
+    const greeting = childName ? `${childName}, ` : "";
     if (!rec.hasProfile) {
       reminderBlock.style.display = "block";
-      reminderText.innerHTML = `<i class="fas fa-edit"></i> ${rec.message}`;
+      reminderText.innerHTML = `<i class="fas fa-edit"></i> ${greeting}${rec.message}`;
       return;
     }
-    const childName = childNameInput.value.trim();
-    const greeting = childName ? `Для ${childName}: ` : "";
     if (!rec.product) {
-      reminderText.innerHTML = `${greeting}🎉 Все продукты по возрасту введены!`;
+      reminderText.innerHTML = `${greeting}🎉 Все продукты по возрасту введены! Молодец!`;
     } else {
       reminderText.innerHTML = `${greeting}👶 Следующий продукт: <strong>${rec.product}</strong> (рекомендуется ${rec.time}). Попробуйте ввести!`;
     }
@@ -287,7 +355,7 @@
       const today = getTodayDateString();
       const yesterday = (()=>{let d=new Date();d.setDate(d.getDate()-1);return d.toISOString().slice(0,10);})();
       feedingEntries = [
-        { id: Date.now()+1, date: today, time: "09:30", product: "Кабачковое пюре", amount: 25, unit: "г", reaction: "good" },
+        { id: Date.now()+1, date: today, time: "09:30", product: "Кабачок", amount: 25, unit: "г", reaction: "good" },
         { id: Date.now()+2, date: today, time: "12:15", product: "Яблоко", amount: 30, unit: "г", reaction: "good" },
         { id: Date.now()+3, date: yesterday, time: "17:45", product: "Гречневая каша", amount: 45, unit: "г", reaction: "good" },
         { id: Date.now()+4, date: yesterday, time: "11:20", product: "Брокколи", amount: 20, unit: "г", reaction: "bad" }
@@ -309,20 +377,47 @@
     });
     return map;
   }
-  function renderProductCatalog() {
+  // Новая функция рендера справочника в виде сетки с категориями и иконками
+  function renderCatalogGrid() {
     const statusMap = getProductStatusMap();
+    const categories = {};
+    productCatalog.forEach(item => {
+      if (!categories[item.category]) categories[item.category] = { icon: item.icon, products: [] };
+      categories[item.category].products.push(item);
+    });
     let html = '';
-    for(let item of productCatalog) {
-      const norm = item.product.toLowerCase();
-      const st = statusMap.get(norm);
-      let statusHtml = '';
-      if(!st || !st.hasAny) statusHtml = `<span class="status-badge status-not"><i class="fas fa-minus-circle"></i> Не введён</span>`;
-      else if(st.hasBad) statusHtml = `<span class="status-badge status-introduced-bad"><i class="fas fa-exclamation-triangle"></i> Введён (плохо)</span>`;
-      else statusHtml = `<span class="status-badge status-introduced-ok"><i class="fas fa-check-circle"></i> Введён (хорошо)</span>`;
-      html += `<tr><td>${escapeHtml(item.category)}</td><td><strong>${escapeHtml(item.product)}</strong></td><td>${escapeHtml(item.timeIntro)}</td><td>${statusHtml}</td></tr>`;
+    for (let [catName, catData] of Object.entries(categories)) {
+      let iconClass = "fa-apple-alt";
+      if (catName === "Фрукты") iconClass = "fa-apple-alt";
+      else if (catName === "Овощи") iconClass = "fa-carrot";
+      else if (catName === "Орехи и злаки") iconClass = "fa-seedling";
+      else iconClass = catData.icon || "fa-leaf";
+      html += `<div class="category-block">
+        <div class="category-title">
+          <div class="category-icon"><i class="fas ${iconClass}"></i></div>
+          <span>${escapeHtml(catName)}</span>
+        </div>
+        <div class="products-grid">`;
+      for (let prod of catData.products) {
+        const norm = prod.product.toLowerCase();
+        const st = statusMap.get(norm);
+        let statusText = "", statusClass = "status-not";
+        if (!st || !st.hasAny) { statusText = "❌ Не введён"; statusClass = "status-not"; }
+        else if (st.hasBad) { statusText = "⚠️ Введён (плохо)"; statusClass = "status-introduced-bad"; }
+        else { statusText = "✅ Введён (хорошо)"; statusClass = "status-introduced-ok"; }
+        html += `<div class="product-card">
+          <div class="product-info">
+            <div class="product-name">${escapeHtml(prod.product)}</div>
+            <div class="product-time">Рек. введение: ${escapeHtml(prod.timeIntro)}</div>
+          </div>
+          <div class="product-status ${statusClass}">${statusText}</div>
+        </div>`;
+      }
+      html += `</div></div>`;
     }
-    catalogTableBody.innerHTML = html;
+    catalogGridContainer.innerHTML = html;
   }
+
   function updateProductsSummary() {
     const map = new Map();
     feedingEntries.forEach(e => {
@@ -396,7 +491,7 @@
     statsArea.innerHTML=`<div class="stat-badge"><i class="fas fa-calendar-day"></i> Сегодня: ${todayCount}</div><div class="stat-badge"><i class="fas fa-database"></i> Всего: ${feedingEntries.length}</div>`;
   }
   function renderAllAndStats() {
-    updateStatistics(); updateProductsSummary(); renderFeedList(); renderProductCatalog(); updateReminder();
+    updateStatistics(); updateProductsSummary(); renderFeedList(); renderCatalogGrid(); updateReminder();
   }
   function bindEvents() {
     submitBtn.onclick=()=>{if(currentEditId!==null) updateCurrentEntry(); else addNewEntry();};
