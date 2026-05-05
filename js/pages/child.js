@@ -1,10 +1,3 @@
-async function loadChildren() {
-  const children = await getAll('children');
-  if (children.length > 0) {
-    activeChildId = children[0].id; // Берём первого, можно добавить выбор
-  }
-}
-
 async function ChildPage() {
   const children = await getAll('children');
   const child = children.find(c => c.id === activeChildId) || {};
@@ -35,26 +28,35 @@ async function ChildPage() {
       </div>
       <button type="submit" class="btn">Сохранить</button>
     </form>
-    <script>
-      document.getElementById('child-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const form = e.target;
-        const data = {
-          name: form.name.value,
-          birthDate: form.birthDate.value,
-          feedingType: form.feedingType.value,
-          allergyFamily: form.allergyFamily.checked
-        };
-        if (activeChildId) {
-          data.id = activeChildId;
-          await updateRecord('children', data);
-        } else {
-          const newId = await addRecord('children', data);
-          activeChildId = newId;
-        }
-        alert('Профиль сохранён');
-        window.location.hash = '#dashboard';
-      });
-    </script>
   `;
+}
+
+// Инициализация обработчиков для страницы профиля
+function initChildPage() {
+  const form = document.getElementById('child-form');
+  if (form) {
+    form.addEventListener('submit', handleChildFormSubmit);
+  }
+}
+
+// Обработчик сохранения профиля
+async function handleChildFormSubmit(e) {
+  e.preventDefault();
+  const form = e.target;
+  const data = {
+    name: form.name.value,
+    birthDate: form.birthDate.value,
+    feedingType: form.feedingType.value,
+    allergyFamily: form.allergyFamily.checked
+  };
+  
+  if (activeChildId) {
+    data.id = activeChildId;
+    await updateRecord('children', data);
+  } else {
+    const newId = await addRecord('children', data);
+    activeChildId = newId;
+  }
+  alert('Профиль сохранён');
+  window.location.hash = '#dashboard';
 }
