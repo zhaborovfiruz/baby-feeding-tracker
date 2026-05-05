@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>ПрикормТрекер :: ввод прикорма для детей</title>
+  <!-- Font Awesome 6 (бесплатные иконки) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Современный шрифт Inter (опционально, но эстетика) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #f4f7fc;
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
+      padding: 24px 16px;
+      color: #1a2c3e;
+    }
+
+    /* главный контейнер – лента карточек */
+    .app-container {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    /* карточки общие (flat + скругления + лёгкая тень) */
+    .card {
+      background: #ffffff;
+      border-radius: 28px;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.02), 0 2px 6px rgba(0, 0, 0, 0.03);
+      padding: 1.5rem;
+      margin-bottom: 1.75rem;
+      transition: all 0.2s ease;
+      border: 1px solid rgba(0, 0, 0, 0.03);
+    }
+
+    /* заголовки */
+    h1 {
+      font-size: 1.85rem;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      background: linear-gradient(135deg, #2b7a4b, #3e9f6b);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+    h1 i {
+      background: none;
+      -webkit-background-clip: unset;
+      background-clip: unset;
+      color: #3e9f6b;
+    }
+    .subhead {
+      color: #5f7f6e;
+      font-weight: 400;
+      margin-top: 6px;
+      font-size: 0.9rem;
+      border-left: 3px solid #cbe5d4;
+      padding-left: 12px;
+    }
+
+    /* статы */
+    .stats-row {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+    .stat-badge {
+      background: #eef3ec;
+      border-radius: 60px;
+      padding: 8px 20px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      color: #2c5a3e;
+      backdrop-filter: blur(2px);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .stat-badge i {
+      font-size: 1rem;
+      color: #479f6e;
+    }
+
+    /* форма */
+    .form-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .input-group {
+      flex: 1;
+      min-width: 130px;
+    }
+    .input-group label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #5c7a6a;
+      margin-bottom: 6px;
+    }
+    input, select {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 0.95rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      background: white;
+      font-family: inherit;
+      transition: 0.2s;
+      outline: none;
+      color: #1e2f3a;
+    }
+    input:focus, select:focus {
+      border-color: #7dcd9e;
+      box-shadow: 0 0 0 3px rgba(61, 167, 98, 0.15);
+    }
+    .button-group {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    button {
+      border: none;
+      background: #eef2f5;
+      padding: 10px 22px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      font-family: inherit;
+      cursor: pointer;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary {
+      background: #2b7a4b;
+      color: white;
+      box-shadow: 0 2px 6px rgba(43, 122, 75, 0.2);
+    }
+    .btn-primary:hover {
+      background: #21693f;
+      transform: translateY(-1px);
+    }
+    .btn-secondary {
+      background: #f0f2f4;
+      color: #3c5e4c;
+    }
+    .btn-secondary:hover {
+      background: #e2e8ed;
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #cbdcd2;
+      color: #547a64;
+    }
+    .btn-outline:hover {
+      background: #f6fbf8;
+      border-color: #8fc0a6;
+    }
+    .btn-danger {
+      background: #fff2f0;
+      color: #c25b4a;
+    }
+    .btn-danger:hover {
+      background: #ffe6e2;
+      color: #b14533;
+    }
+
+    /* фильтры (pill-переключатель) */
+    .filter-bar {
+      display: flex;
+      gap: 12px;
+      background: #ffffffcc;
+      backdrop-filter: blur(2px);
+      border-radius: 60px;
+      padding: 4px;
+    }
+    .filter-btn {
+      background: transparent;
+      border-radius: 40px;
+      padding: 8px 20px;
+      font-weight: 500;
+      color: #4f6e5e;
+    }
+    .filter-btn.active {
+      background: #2b7a4b;
+      color: white;
+      box-shadow: 0 4px 10px rgba(43, 122, 75, 0.2);
+    }
+
+    /* список кормлений */
+    .entries-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .meal-item {
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      transition: 0.1s;
+      border: 1px solid #ecf3ef;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+    .meal-info {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 12px;
+      row-gap: 8px;
+      flex: 3;
+    }
+    .meal-time {
+      font-weight: 600;
+      background: #f0f6f2;
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      color: #2d6a47;
+    }
+    .meal-product {
+      font-weight: 700;
+      font-size: 1rem;
+      color: #1f3e30;
+    }
+    .meal-amount {
+      background: #fef7e0;
+      border-radius: 30px;
+      padding: 4px 12px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #a9772c;
+    }
+    .meal-date {
+      font-size: 0.7rem;
+      color: #7f9a8c;
+      letter-spacing: -0.2px;
+    }
+    .meal-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .action-icon {
+      background: transparent;
+      padding: 6px;
+      border-radius: 40px;
+      color: #8ba393;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: 0.1s;
+    }
+    .action-icon:hover {
+      background: #eef2ef;
+      color: #2b7a4b;
+    }
+    .action-icon.delete:hover {
+      color: #e0665c;
+      background: #fff0ef;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      background: #fefef9;
+      border-radius: 48px;
+      color: #86a394;
+    }
+    hr {
+      margin: 12px 0;
+      border: 0;
+      height: 1px;
+      background: #e2ece6;
+    }
+    footer {
+      text-align: center;
+      font-size: 0.7rem;
+      color: #98afa2;
+      margin-top: 30px;
+    }
+    @media (max-width: 620px) {
+      .card {
+        padding: 1rem;
+      }
+      .form-grid .input-group {
+        min-width: 100%;
+      }
+      .meal-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      .meal-actions {
+        align-self: flex-end;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="app-container">
+  <!-- шапка -->
+  <div class="card" style="padding-bottom: 1.2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+      <div>
+        <h1><i class="fas fa-baby-carriage"></i> ПрикормТрекер</h1>
+        <div class="subhead">Дневник ввода прикорма — фиксируйте продукты, порции и время</div>
+      </div>
+      <div class="stats-row" id="statsArea">
+        <!-- динамическая статистика -->
+      </div>
+    </div>
+  </div>
+
+  <!-- форма добавления / редактирования -->
+  <div class="card">
+    <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 16px;">
+      <i class="fas fa-utensils" style="color: #479f6e;"></i>
+      <span style="font-weight: 600; font-size: 0.9rem;">НОВОЕ КОРМЛЕНИЕ</span>
+    </div>
+    <div class="form-grid">
+      <div class="input-group">
+        <label><i class="far fa-calendar-alt"></i> Дата</label>
+        <input type="date" id="feedDate" required>
+      </div>
+      <div class="input-group">
+        <label><i class="far fa-clock"></i> Время</label>
+        <input type="time" id="feedTime" required>
+      </div>
+      <div class="input-group">
+        <label><i class="fas fa-apple-alt"></i> Продукт</label>
+        <input type="text" id="productName" placeholder="напр. брокколи, яблоко, каша" autocomplete="off">
+      </div>
+      <div class="input-group">
+        <label><i class="fas fa-weight-hanging"></i> Кол-во</label>
+        <input type="number" id="amountVal" step="0.5" placeholder="опционально" value="0" min="0">
+      </div>
+      <div class="input-group">
+        <label><i class="fas fa-ruler"></i> Ед.</label>
+        <select id="unitSelect">
+          <option value="г">грамм (г)</option>
+          <option value="мл">миллилитр (мл)</option>
+          <option value="ложка">ложка</option>
+          <option value="шт">штука (шт)</option>
+        </select>
+      </div>
+    </div>
+    <div class="button-group">
+      <button id="submitBtn" class="btn-primary"><i class="fas fa-save"></i> Добавить запись</button>
+      <button id="cancelEditBtn" class="btn-secondary" style="display: none;"><i class="fas fa-times"></i> Отменить</button>
+      <button id="clearAllBtn" class="btn-outline" style="margin-left: auto;"><i class="fas fa-trash-alt"></i> Очистить всё</button>
+    </div>
+  </div>
+
+  <!-- панель фильтрации -->
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 12px;">
+    <div class="filter-bar">
+      <button data-filter="today" class="filter-btn active" id="filterTodayBtn"><i class="fas fa-sun"></i> Сегодня</button>
+      <button data-filter="all" class="filter-btn" id="filterAllBtn"><i class="fas fa-list"></i> Все записи</button>
+    </div>
+    <span style="font-size: 0.75rem; color:#6f957f;"><i class="fas fa-database"></i> данные сохраняются локально</span>
+  </div>
+
+  <!-- список прикормов -->
+  <div class="card" style="padding: 1rem 1rem 1.2rem 1rem;">
+    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 16px; padding-left: 6px;">
+      <i class="fas fa-history" style="color:#7fba95;"></i>
+      <span style="font-weight: 600;">История прикорма</span>
+    </div>
+    <div id="entriesContainer" class="entries-list">
+      <!-- динамический рендер -->
+      <div class="empty-state">✨ Здесь появятся записи о прикорме</div>
+    </div>
+  </div>
+  <footer>
+    <i class="fas fa-heart" style="color:#bfd9cd;"></i> трекер для заботливых родителей — все данные в вашем браузере
+  </footer>
+</div>
+
+<script>
+  // --- КЛЮЧИ ХРАНИЛИЩА ---
+  const STORAGE_KEY = "baby_solid_food_tracker";
+
+  // --- ГЛОБАЛЬНОЕ СОСТОЯНИЕ ---
+  let feedingEntries = [];     // массив объектов прикорма
+  let currentEditId = null;    // id редактируемой записи
+  let currentFilter = "today"; // "today" или "all"
+
+  // --- DOM ЭЛЕМЕНТЫ ---
+  const dateInput = document.getElementById("feedDate");
+  const timeInput = document.getElementById("feedTime");
+  const productInput = document.getElementById("productName");
+  const amountInput = document.getElementById("amountVal");
+  const unitSelect = document.getElementById("unitSelect");
+  const submitBtn = document.getElementById("submitBtn");
+  const cancelEditBtn = document.getElementById("cancelEditBtn");
+  const clearAllBtn = document.getElementById("clearAllBtn");
+  const entriesContainer = document.getElementById("entriesContainer");
+  const statsArea = document.getElementById("statsArea");
+  const filterTodayBtn = document.getElementById("filterTodayBtn");
+  const filterAllBtn = document.getElementById("filterAllBtn");
+
+  // --- Утилиты ---
+  function getTodayDateString() {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  }
+
+  function getCurrentTimeString() {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    return `${hours}:${minutes}`;
+  }
+
+  // форматируем дату для отображения (сегодня/вчера или число)
+  function formatDisplayDate(dateStr) {
+    if (!dateStr) return "";
+    const today = getTodayDateString();
+    if (dateStr === today) return "Сегодня";
+    // вчера
+    const yesterdayDate = new Date();
+    yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+    const yyyy = yesterdayDate.getFullYear();
+    const mm = String(yesterdayDate.getMonth() + 1).padStart(2, '0');
+    const dd = String(yesterdayDate.getDate()).padStart(2, '0');
+    const yesterdayStr = `${yyyy}-${mm}-${dd}`;
+    if (dateStr === yesterdayStr) return "Вчера";
+    // иначе красиво: дд.мм.гггг
+    const [year, month, day] = dateStr.split("-");
+    return `${day}.${month}.${year}`;
+  }
+
+  // сохранить в localStorage
+  function persistData() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(feedingEntries));
+  }
+
+  // загрузить данные из localStorage + инициализация демо если пусто
+  function loadInitialData() {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      feedingEntries = JSON.parse(stored);
+      // убедимся что все поля есть (миграция)
+      feedingEntries = feedingEntries.map(entry => ({
+        id: entry.id,
+        date: entry.date,
+        time: entry.time,
+        product: entry.product,
+        amount: entry.amount !== undefined ? entry.amount : 0,
+        unit: entry.unit || "г"
+      }));
+    } else {
+      // демо-примеры для приятного старта
+      const today = getTodayDateString();
+      const yesterday = (() => {
+        const d = new Date();
+        d.setDate(d.getDate() - 1);
+        const yy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        return `${yy}-${mm}-${dd}`;
+      })();
+      feedingEntries = [
+        { id: Date.now() + 1, date: today, time: "09:30", product: "Кабачковое пюре", amount: 25, unit: "г" },
+        { id: Date.now() + 2, date: today, time: "12:15", product: "Яблоко (запечённое)", amount: 30, unit: "г" },
+        { id: Date.now() + 3, date: yesterday, time: "17:45", product: "Безмолочная рисовая каша", amount: 45, unit: "г" },
+        { id: Date.now() + 4, date: yesterday, time: "11:20", product: "Брокколи", amount: 20, unit: "г" }
+      ];
+      persistData();
+    }
+  }
+
+  // статистика: количество приёмов сегодня + общее количество
+  function updateStatistics() {
+    const todayStr = getTodayDateString();
+    const todayEntries = feedingEntries.filter(entry => entry.date === todayStr);
+    const totalEntries = feedingEntries.length;
+    statsArea.innerHTML = `
+      <div class="stat-badge"><i class="fas fa-calendar-day"></i> Сегодня: ${todayEntries.length} приём(ов)</div>
+      <div class="stat-badge"><i class="fas fa-list-ul"></i> Всего записей: ${totalEntries}</div>
+    `;
+  }
+
+  // получить отфильтрованные и отсортированные (новые сверху: дата+время)
+  function getFilteredSortedEntries() {
+    let filtered = [...feedingEntries];
+    if (currentFilter === "today") {
+      const todayStr = getTodayDateString();
+      filtered = filtered.filter(entry => entry.date === todayStr);
+    }
+    // сортировка: сначала более поздние дата+время
+    filtered.sort((a, b) => {
+      const dateTimeA = `${a.date}T${a.time}`;
+      const dateTimeB = `${b.date}T${b.time}`;
+      return dateTimeB.localeCompare(dateTimeA);
+    });
+    return filtered;
+  }
+
+  // рендер всего списка на основе фильтра
+  function renderFeedList() {
+    const filteredSorted = getFilteredSortedEntries();
+    if (!filteredSorted.length) {
+      entriesContainer.innerHTML = `<div class="empty-state"><i class="fas fa-baby"></i> ${currentFilter === "today" ? "Сегодня пока нет прикорма. Добавьте первый!" : "Нет ни одной записи. Добавьте прикорм ➕"}</div>`;
+      return;
+    }
+    entriesContainer.innerHTML = filteredSorted.map(entry => {
+      const amountHtml = (entry.amount && entry.amount > 0) ? `<span class="meal-amount"><i class="fas fa-balance-scale-left"></i> ${entry.amount} ${entry.unit}</span>` : '';
+      const displayDate = formatDisplayDate(entry.date);
+      return `
+        <div class="meal-item" data-id="${entry.id}">
+          <div class="meal-info">
+            <span class="meal-time"><i class="far fa-clock"></i> ${entry.time}</span>
+            <span class="meal-product"><i class="fas fa-carrot"></i> ${escapeHtml(entry.product)}</span>
+            ${amountHtml}
+            <span class="meal-date"><i class="far fa-calendar-alt"></i> ${displayDate}</span>
+          </div>
+          <div class="meal-actions">
+            <span class="action-icon edit-action" data-id="${entry.id}" title="Редактировать"><i class="fas fa-pen"></i></span>
+            <span class="action-icon delete" data-id="${entry.id}" title="Удалить"><i class="fas fa-trash-can"></i></span>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // навешиваем обработчики на кнопки редактирования и удаления после рендера
+    document.querySelectorAll('.edit-action').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = Number(btn.getAttribute('data-id'));
+        startEditEntry(id);
+      });
+    });
+    document.querySelectorAll('.action-icon.delete').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = Number(btn.getAttribute('data-id'));
+        deleteEntryById(id);
+      });
+    });
+  }
+
+  // вспомогательная защита от XSS
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+      return c;
+    });
+  }
+
+  // добавление новой записи
+  function addNewEntry() {
+    const dateVal = dateInput.value;
+    const timeVal = timeInput.value;
+    const productVal = productInput.value.trim();
+    let amountVal = parseFloat(amountInput.value);
+    const unitVal = unitSelect.value;
+
+    if (!dateVal) {
+      alert("Укажите дату прикорма");
+      return;
+    }
+    if (!timeVal) {
+      alert("Укажите время");
+      return;
+    }
+    if (productVal === "") {
+      alert("Введите название продукта");
+      return;
+    }
+    if (isNaN(amountVal) || amountVal < 0) amountVal = 0;
+
+    const newEntry = {
+      id: Date.now(),
+      date: dateVal,
+      time: timeVal,
+      product: productVal,
+      amount: amountVal,
+      unit: unitVal,
+    };
+    feedingEntries.push(newEntry);
+    persistData();
+    resetFormAndEditing();
+    renderAllAndStats();
+  }
+
+  // редактирование: заполнить форму данными выбранной записи
+  function startEditEntry(id) {
+    const entry = feedingEntries.find(e => e.id === id);
+    if (!entry) return;
+
+    currentEditId = id;
+    dateInput.value = entry.date;
+    timeInput.value = entry.time;
+    productInput.value = entry.product;
+    amountInput.value = entry.amount;
+    unitSelect.value = entry.unit;
+
+    submitBtn.innerHTML = '<i class="fas fa-pen"></i> Обновить запись';
+    cancelEditBtn.style.display = 'inline-flex';
+    // плавный скролл к форме
+    document.querySelector('.card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // сохранение отредактированной записи
+  function updateCurrentEntry() {
+    if (currentEditId === null) return;
+
+    const dateVal = dateInput.value;
+    const timeVal = timeInput.value;
+    const productVal = productInput.value.trim();
+    let amountVal = parseFloat(amountInput.value);
+    const unitVal = unitSelect.value;
+
+    if (!dateVal || !timeVal || productVal === "") {
+      alert("Заполните дату, время и название продукта");
+      return;
+    }
+    if (isNaN(amountVal) || amountVal < 0) amountVal = 0;
+
+    const index = feedingEntries.findIndex(e => e.id === currentEditId);
+    if (index !== -1) {
+      feedingEntries[index] = {
+        ...feedingEntries[index],
+        date: dateVal,
+        time: timeVal,
+        product: productVal,
+        amount: amountVal,
+        unit: unitVal,
+      };
+      persistData();
+    }
+    resetFormAndEditing();
+    renderAllAndStats();
+  }
+
+  // удалить запись по id
+  function deleteEntryById(id) {
+    if (confirm("Удалить запись о прикорме?")) {
+      feedingEntries = feedingEntries.filter(entry => entry.id !== id);
+      persistData();
+      // если редактировали удалённую, сброс
+      if (currentEditId === id) resetFormAndEditing();
+      renderAllAndStats();
+    }
+  }
+
+  // очистка всех данных (полная)
+  function clearAllData() {
+    if (confirm("⚠️ ВНИМАНИЕ: будут удалены ВСЕ записи о прикорме. Продолжить?")) {
+      feedingEntries = [];
+      persistData();
+      resetFormAndEditing();
+      renderAllAndStats();
+    }
+  }
+
+  // сброс формы и выход из режима редактирования
+  function resetFormAndEditing() {
+    currentEditId = null;
+    const today = getTodayDateString();
+    const currentTime = getCurrentTimeString();
+    dateInput.value = today;
+    timeInput.value = currentTime;
+    productInput.value = "";
+    amountInput.value = "0";
+    unitSelect.value = "г";
+    submitBtn.innerHTML = '<i class="fas fa-save"></i> Добавить запись';
+    cancelEditBtn.style.display = 'none';
+  }
+
+  // обновить фильтры UI и перерендер
+  function setFilter(filterMode) {
+    currentFilter = filterMode;
+    if (filterMode === "today") {
+      filterTodayBtn.classList.add("active");
+      filterAllBtn.classList.remove("active");
+    } else {
+      filterAllBtn.classList.add("active");
+      filterTodayBtn.classList.remove("active");
+    }
+    renderFeedList();   // перерисовка списка с новым фильтром
+    updateStatistics(); // статистика не зависит от фильтра (всегда общая/сегодня - но выше отдельно)
+  }
+
+  // рендер всего (список, статистика)
+  function renderAllAndStats() {
+    updateStatistics();
+    renderFeedList();
+  }
+
+  // --- Обработчики кнопок и инициализация ---
+  function bindEventListeners() {
+    submitBtn.addEventListener('click', () => {
+      if (currentEditId !== null) {
+        updateCurrentEntry();
+      } else {
+        addNewEntry();
+      }
+    });
+    cancelEditBtn.addEventListener('click', () => {
+      resetFormAndEditing();
+    });
+    clearAllBtn.addEventListener('click', () => {
+      clearAllData();
+    });
+    filterTodayBtn.addEventListener('click', () => setFilter("today"));
+    filterAllBtn.addEventListener('click', () => setFilter("all"));
+  }
+
+  // начальная установка формы по умолчанию
+  function setDefaultFormValues() {
+    dateInput.value = getTodayDateString();
+    timeInput.value = getCurrentTimeString();
+    productInput.value = "";
+    amountInput.value = "0";
+    unitSelect.value = "г";
+  }
+
+  // полный запуск приложения
+  function init() {
+    loadInitialData();
+    setDefaultFormValues();
+    bindEventListeners();
+    updateStatistics();
+    renderFeedList();
+    // синхронизация активного фильтра с currentFilter (по умолчанию today)
+    setFilter("today");
+  }
+
+  init();
+</script>
+</body>
+</html>
