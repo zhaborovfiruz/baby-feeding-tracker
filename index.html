@@ -3,21 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>ПрикормТрекер | Иллюстрации и сетка продуктов</title>
+  <title>ПрикормТрекер | Три вкладки</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       background: #f4f7fc;
-      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
+      font-family: 'Inter', system-ui, sans-serif;
       padding: 24px 16px;
       color: #1a2c3e;
     }
     .app-container { max-width: 1300px; margin: 0 auto; }
-    .two-columns { display: flex; gap: 24px; flex-wrap: wrap; }
-    .left-col { flex: 2; min-width: 280px; }
-    .right-col { flex: 1.2; min-width: 260px; }
     .card {
       background: #ffffff;
       border-radius: 28px;
@@ -26,204 +23,181 @@
       margin-bottom: 1.75rem;
       border: 1px solid rgba(0, 0, 0, 0.03);
     }
-    h1 { font-size: 1.85rem; font-weight: 700; letter-spacing: -0.3px; background: linear-gradient(135deg, #2b7a4b, #3e9f6b); -webkit-background-clip: text; background-clip: text; color: transparent; display: inline-flex; align-items: center; gap: 10px; }
-    .subhead { color: #5f7f6e; font-weight: 400; margin-top: 6px; font-size: 0.9rem; border-left: 3px solid #cbe5d4; padding-left: 12px; }
+    h1 { font-size: 1.85rem; font-weight: 700; background: linear-gradient(135deg, #2b7a4b, #3e9f6b); -webkit-background-clip: text; background-clip: text; color: transparent; display: inline-flex; align-items: center; gap: 10px; }
+    .subhead { color: #5f7f6e; margin-top: 6px; font-size: 0.9rem; border-left: 3px solid #cbe5d4; padding-left: 12px; }
+    /* вкладки */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      background: white;
+      border-radius: 60px;
+      padding: 6px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    }
+    .tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: #4f6e5e;
+    }
+    .tab-btn.active {
+      background: #2b7a4b;
+      color: white;
+      box-shadow: 0 4px 10px rgba(43, 122, 75, 0.2);
+    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    /* остальные стили (многие переиспользуются) */
     .stats-row { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 16px; }
-    .stat-badge { background: #eef3ec; border-radius: 60px; padding: 8px 20px; font-weight: 500; font-size: 0.9rem; color: #2c5a3e; display: inline-flex; align-items: center; gap: 8px; }
+    .stat-badge { background: #eef3ec; border-radius: 60px; padding: 8px 20px; font-weight: 500; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px; }
     .profile-grid { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-end; }
     .profile-field { flex: 1; min-width: 180px; }
     .reminder-card { background: #eef9f2; border-radius: 28px; padding: 16px 20px; margin-bottom: 1.5rem; border-left: 6px solid #2b7a4b; }
     .form-grid { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 20px; }
     .input-group { flex: 1; min-width: 130px; }
-    .input-group label { display: block; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #5c7a6a; margin-bottom: 6px; }
+    .input-group label { display: block; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: #5c7a6a; margin-bottom: 6px; }
     input, select { width: 100%; padding: 12px 14px; font-size: 0.95rem; border: 1px solid #e2e8f0; border-radius: 20px; background: white; font-family: inherit; outline: none; }
     input:focus, select:focus { border-color: #7dcd9e; box-shadow: 0 0 0 3px rgba(61, 167, 98, 0.15); }
     .reaction-group { display: flex; gap: 20px; align-items: center; background: #f9fdfa; padding: 8px 16px; border-radius: 40px; }
     .reaction-option { display: flex; align-items: center; gap: 6px; cursor: pointer; font-weight: 500; }
     .reaction-option input { width: 18px; height: 18px; accent-color: #2b7a4b; }
     .good-label { color: #2c7a4d; } .bad-label { color: #c46b5e; }
-    .button-group { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: 8px; }
-    button { border: none; background: #eef2f5; padding: 10px 22px; border-radius: 40px; font-weight: 600; font-size: 0.85rem; font-family: inherit; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; }
-    .btn-primary { background: #2b7a4b; color: white; box-shadow: 0 2px 6px rgba(43, 122, 75, 0.2); }
-    .btn-primary:hover { background: #21693f; transform: translateY(-1px); }
+    .button-group { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+    button { border: none; background: #eef2f5; padding: 10px 22px; border-radius: 40px; font-weight: 600; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; }
+    .btn-primary { background: #2b7a4b; color: white; }
+    .btn-primary:hover { background: #21693f; }
     .btn-secondary { background: #f0f2f4; color: #3c5e4c; }
-    .filter-bar { display: flex; gap: 12px; background: #ffffffcc; border-radius: 60px; padding: 4px; margin-bottom: 1rem; }
+    .filter-bar { display: flex; gap: 12px; background: #fff; border-radius: 60px; padding: 4px; margin-bottom: 1rem; }
     .filter-btn { background: transparent; border-radius: 40px; padding: 8px 20px; font-weight: 500; color: #4f6e5e; }
     .filter-btn.active { background: #2b7a4b; color: white; }
     .entries-list { display: flex; flex-direction: column; gap: 12px; }
-    .meal-item { background: #ffffff; border-radius: 24px; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; border: 1px solid #ecf3ef; }
-    .meal-info { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px; flex: 3; }
-    .meal-time { font-weight: 600; background: #f0f6f2; padding: 4px 12px; border-radius: 50px; font-size: 0.75rem; color: #2d6a47; }
-    .meal-product { font-weight: 700; font-size: 1rem; color: #1f3e30; }
-    .meal-amount { background: #fef7e0; border-radius: 30px; padding: 4px 12px; font-size: 0.75rem; font-weight: 500; color: #a9772c; }
+    .meal-item { background: #fff; border-radius: 24px; padding: 14px 20px; display: flex; justify-content: space-between; flex-wrap: wrap; border: 1px solid #ecf3ef; }
+    .meal-info { display: flex; flex-wrap: wrap; gap: 12px; align-items: baseline; flex: 3; }
+    .meal-time { background: #f0f6f2; padding: 4px 12px; border-radius: 50px; font-size: 0.75rem; color: #2d6a47; }
+    .meal-product { font-weight: 700; font-size: 1rem; }
+    .meal-amount { background: #fef7e0; border-radius: 30px; padding: 4px 12px; font-size: 0.75rem; }
     .reaction-badge { padding: 4px 12px; border-radius: 50px; font-size: 0.7rem; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; }
     .reaction-good { background: #e0f3e4; color: #1f6e42; }
     .reaction-bad { background: #fee9e5; color: #c55a4a; }
-    .meal-actions { display: flex; gap: 12px; align-items: center; }
-    .action-icon { background: transparent; padding: 6px; border-radius: 40px; cursor: pointer; font-size: 1rem; color: #8ba393; }
+    .action-icon { background: transparent; padding: 6px; border-radius: 40px; cursor: pointer; color: #8ba393; }
     .action-icon:hover { background: #eef2ef; color: #2b7a4b; }
-    .product-category { margin-bottom: 20px; }
-    .product-category h4 { font-size: 1rem; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-    .product-tag { display: inline-block; background: #f1f5f9; border-radius: 40px; padding: 6px 14px; margin: 0 8px 8px 0; font-size: 0.8rem; font-weight: 500; }
+    .product-tag { display: inline-block; background: #f1f5f9; border-radius: 40px; padding: 6px 14px; margin: 0 8px 8px 0; font-size: 0.8rem; }
     .product-tag.good { background: #e1f3e6; color: #226e44; border-left: 3px solid #2b7a4b; }
     .product-tag.bad { background: #ffe6e2; color: #bc5a4a; border-left: 3px solid #d96c5e; }
     .empty-state { text-align: center; padding: 40px 20px; background: #fefef9; border-radius: 48px; color: #86a394; }
-    
-    /* НОВЫЙ СТИЛЬ ДЛЯ СЕТКИ КАТЕГОРИЙ */
-    .catalog-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-    }
-    .category-block {
-      background: #fefefe;
-      border-radius: 28px;
-      padding: 1rem 1.2rem 1.2rem 1.2rem;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-      border: 1px solid #ecf3ef;
-    }
-    .category-title {
-      font-size: 1.4rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      color: #2b5a42;
-      border-bottom: 2px dashed #d9e8e0;
-      padding-bottom: 8px;
-    }
-    .category-icon {
-      font-size: 1.8rem;
-      width: 48px;
-      text-align: center;
-    }
-    .products-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 14px;
-    }
-    .product-card {
-      background: #ffffff;
-      border-radius: 24px;
-      padding: 12px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border: 1px solid #eef2ef;
-      transition: 0.1s;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
-    }
-    .product-info {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .product-name {
-      font-weight: 700;
-      font-size: 1rem;
-      color: #1f3e30;
-    }
-    .product-time {
-      font-size: 0.7rem;
-      color: #7c9b8b;
-    }
-    .product-status {
-      font-size: 0.7rem;
-      font-weight: 500;
-      padding: 4px 10px;
-      border-radius: 30px;
-      white-space: nowrap;
-    }
-    .accordion { background: #ffffff; border-radius: 28px; margin-top: 1rem; overflow: hidden; border: 1px solid #e9f0ec; }
-    .accordion-header { background: #f9fdfa; padding: 1rem 1.5rem; font-weight: 700; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; color: #2b7a4b; }
-    .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; padding: 0 1.5rem; }
-    .accordion-content.open { max-height: 2000px; padding: 1rem 1.5rem 1.5rem; transition: max-height 0.5s ease-in; }
+    /* сетка каталога */
+    .catalog-grid { display: flex; flex-direction: column; gap: 2rem; }
+    .category-block { background: #fefefe; border-radius: 28px; padding: 1rem 1.2rem; border: 1px solid #ecf3ef; }
+    .category-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 12px; color: #2b5a42; border-bottom: 2px dashed #d9e8e0; padding-bottom: 8px; }
+    .category-icon { font-size: 1.8rem; width: 48px; }
+    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+    .product-card { background: #fff; border-radius: 24px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #eef2ef; }
+    .product-name { font-weight: 700; }
+    .product-time { font-size: 0.7rem; color: #7c9b8b; }
+    .product-status { font-size: 0.7rem; font-weight: 500; padding: 4px 10px; border-radius: 30px; white-space: nowrap; }
+    .status-introduced-ok { background: #e0f3e4; color: #1b6e3f; }
+    .status-introduced-bad { background: #fee2dd; color: #bc4e3a; }
+    .status-not { background: #f1f3f4; color: #7f8e86; }
     footer { text-align: center; font-size: 0.7rem; color: #98afa2; margin-top: 30px; }
-    hr { margin: 12px 0; border: 0; height: 1px; background: #e2ece6; }
-    @media (max-width: 760px) {
-      .two-columns { flex-direction: column; }
-      .profile-grid { flex-direction: column; }
-      .products-grid { grid-template-columns: 1fr; }
-    }
+    hr { margin: 12px 0; background: #e2ece6; height: 1px; border: 0; }
+    @media (max-width: 760px) { .profile-grid { flex-direction: column; } .products-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
 <div class="app-container">
-  <!-- шапка -->
-  <div class="card">
-    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-      <div><h1><i class="fas fa-baby-carriage"></i> ПрикормТрекер+</h1><div class="subhead">С напоминаниями и иллюстрациями категорий</div></div>
-      <div class="stats-row" id="statsArea"></div>
-    </div>
+  <div class="card" style="padding-bottom: 1rem;">
+    <h1><i class="fas fa-baby-carriage"></i> ПрикормТрекер</h1>
+    <div class="subhead">Три вкладки: дневник / справочник / профиль</div>
   </div>
 
-  <!-- профиль ребёнка -->
-  <div class="card">
-    <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 16px;"><i class="fas fa-child"></i> <span style="font-weight: 600;">О ребёнке</span></div>
-    <div class="profile-grid">
-      <div class="profile-field"><label>Имя ребёнка</label><input type="text" id="childName" placeholder="Например, София"></div>
-      <div class="profile-field"><label>Дата рождения</label><input type="date" id="childBirthday"></div>
-      <div class="profile-field"><button id="saveProfileBtn" class="btn-secondary"><i class="fas fa-save"></i> Сохранить</button></div>
-    </div>
+  <!-- Вкладки -->
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="diary"><i class="fas fa-book-open"></i> Дневник</button>
+    <button class="tab-btn" data-tab="catalog"><i class="fas fa-carrot"></i> Справочник</button>
+    <button class="tab-btn" data-tab="profile"><i class="fas fa-user"></i> Профиль</button>
   </div>
 
-  <!-- напоминание -->
-  <div id="reminderBlock" class="reminder-card" style="display: none;">
-    <div style="display: flex; gap: 10px; align-items: center;"><i class="fas fa-bell" style="font-size: 1.4rem; color:#2b7a4b;"></i> <strong style="font-size: 1.1rem;">Напоминание</strong></div>
-    <div id="reminderText" style="margin-top: 8px;"></div>
-  </div>
+  <!-- ========= ВКЛАДКА 1: ДНЕВНИК ========= -->
+  <div id="tab-diary" class="tab-content active">
+    <div id="reminderBlock" class="reminder-card" style="display: none;">
+      <div style="display: flex; gap: 10px; align-items: center;"><i class="fas fa-bell" style="font-size: 1.4rem; color:#2b7a4b;"></i> <strong>Напоминание</strong></div>
+      <div id="reminderText"></div>
+    </div>
 
-  <!-- форма добавления -->
-  <div class="card">
-    <div><i class="fas fa-utensils"></i> <span style="font-weight: 600;">Новое кормление</span></div>
-    <div class="form-grid">
-      <div class="input-group"><label>Дата</label><input type="date" id="feedDate"></div>
-      <div class="input-group"><label>Время</label><input type="time" id="feedTime"></div>
-      <div class="input-group"><label>Продукт</label><input type="text" id="productName" placeholder="брокколи, каша"></div>
-      <div class="input-group"><label>Кол-во</label><input type="number" id="amountVal" step="0.5" value="0"></div>
-      <div class="input-group"><label>Ед.</label><select id="unitSelect"><option value="г">г</option><option value="мл">мл</option><option value="ложка">ложка</option><option value="шт">шт</option></select></div>
-      <div class="input-group"><label>Реакция</label><div class="reaction-group"><label class="reaction-option good-label"><input type="radio" name="reaction" value="good" checked> <i class="fas fa-smile-wink"></i> Хорошо</label><label class="reaction-option bad-label"><input type="radio" name="reaction" value="bad"> <i class="fas fa-frown"></i> Плохо</label></div></div>
-    </div>
-    <div class="button-group">
-      <button id="submitBtn" class="btn-primary"><i class="fas fa-save"></i> Добавить</button>
-      <button id="cancelEditBtn" class="btn-secondary" style="display: none;">Отмена</button>
-      <button id="clearAllBtn" class="btn-secondary" style="margin-left: auto;">Очистить всё</button>
-    </div>
-  </div>
-
-  <!-- две колонки -->
-  <div class="two-columns">
-    <div class="left-col">
-      <div class="filter-bar"><button data-filter="today" class="filter-btn active" id="filterTodayBtn"><i class="fas fa-sun"></i> Сегодня</button><button data-filter="all" class="filter-btn" id="filterAllBtn"><i class="fas fa-list"></i> Все записи</button></div>
-      <div class="card"><div style="margin-bottom: 16px;"><i class="fas fa-history"></i> История</div><div id="entriesContainer" class="entries-list"></div></div>
-    </div>
-    <div class="right-col">
-      <div class="card"><div><i class="fas fa-clipboard-list"></i> Сводка по продуктам</div><div id="productsSummary"></div><hr><div class="subhead">Если была плохая реакция — в «нельзя».</div></div>
-    </div>
-  </div>
-
-  <!-- СПРАВОЧНИК С ИЛЛЮСТРАЦИЯМИ И СЕТКОЙ -->
-  <div class="accordion" id="catalogAccordion">
-    <div class="accordion-header" id="catalogHeader"><span><i class="fas fa-book-open"></i> Справочник продуктов (с иллюстрациями, сетка)</span><i class="fas fa-chevron-down" id="accordionIcon"></i></div>
-    <div class="accordion-content" id="catalogContent">
-      <div id="catalogGridContainer" class="catalog-grid">
-        <!-- сюда динамически загружаются категории с иконками и карточками продуктов -->
+    <div class="card">
+      <div><i class="fas fa-utensils"></i> <strong>Новое кормление</strong></div>
+      <div class="form-grid">
+        <div class="input-group"><label>Дата</label><input type="date" id="feedDate"></div>
+        <div class="input-group"><label>Время</label><input type="time" id="feedTime"></div>
+        <div class="input-group"><label>Продукт</label><input type="text" id="productName" placeholder="брокколи, каша"></div>
+        <div class="input-group"><label>Кол-во</label><input type="number" id="amountVal" step="0.5" value="0"></div>
+        <div class="input-group"><label>Ед.</label><select id="unitSelect"><option value="г">г</option><option value="мл">мл</option><option value="ложка">ложка</option><option value="шт">шт</option></select></div>
+        <div class="input-group"><label>Реакция</label><div class="reaction-group"><label class="reaction-option good-label"><input type="radio" name="reaction" value="good" checked> <i class="fas fa-smile-wink"></i> Хорошо</label><label class="reaction-option bad-label"><input type="radio" name="reaction" value="bad"> <i class="fas fa-frown"></i> Плохо</label></div></div>
       </div>
-      <div class="subhead" style="margin-top: 12px;">* Статус на основе ваших записей. Категории расположены в виде сетки с карточками продуктов.</div>
+      <div class="button-group">
+        <button id="submitBtn" class="btn-primary"><i class="fas fa-save"></i> Добавить</button>
+        <button id="cancelEditBtn" class="btn-secondary" style="display: none;">Отмена</button>
+        <button id="clearAllBtn" class="btn-secondary">Очистить всё</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="stats-row" id="statsArea"></div>
+      <div class="filter-bar"><button data-filter="today" class="filter-btn active" id="filterTodayBtn">Сегодня</button><button data-filter="all" class="filter-btn" id="filterAllBtn">Все записи</button></div>
+      <div id="entriesContainer" class="entries-list"></div>
     </div>
   </div>
-  <footer><i class="fas fa-heart"></i> Данные сохраняются локально, иллюстрации категорий — фрукты, овощи, орехи и злаки</footer>
+
+  <!-- ========= ВКЛАДКА 2: СПРАВОЧНИК ========= -->
+  <div id="tab-catalog" class="tab-content">
+    <div class="card">
+      <div><i class="fas fa-clipboard-list"></i> <strong>Сводка по продуктам (можно / нельзя)</strong></div>
+      <div id="productsSummary"></div>
+    </div>
+    <div class="card">
+      <div><i class="fas fa-book-open"></i> <strong>Справочник продуктов (сетка с категориями)</strong></div>
+      <div id="catalogGridContainer" class="catalog-grid"></div>
+      <div class="subhead" style="margin-top: 12px;">Статус обновляется автоматически из ваших записей.</div>
+    </div>
+  </div>
+
+  <!-- ========= ВКЛАДКА 3: ПРОФИЛЬ РЕБЁНКА ========= -->
+  <div id="tab-profile" class="tab-content">
+    <div class="card">
+      <div><i class="fas fa-child"></i> <strong>Данные ребёнка</strong></div>
+      <div class="profile-grid">
+        <div class="profile-field"><label>Имя ребёнка</label><input type="text" id="childName" placeholder="София"></div>
+        <div class="profile-field"><label>Дата рождения</label><input type="date" id="childBirthday"></div>
+        <div class="profile-field"><button id="saveProfileBtn" class="btn-secondary"><i class="fas fa-save"></i> Сохранить</button></div>
+      </div>
+    </div>
+  </div>
+
+  <footer><i class="fas fa-heart"></i> Данные сохраняются только в вашем браузере. Переключайте вкладки.</footer>
 </div>
 
 <script>
+  // ---------- КЛЮЧИ ХРАНИЛИЩА ----------
   const STORAGE_KEY = "baby_solid_food_tracker_v2";
   const PROFILE_KEY = "baby_profile";
+
+  // ---------- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ----------
   let feedingEntries = [];
   let currentEditId = null;
   let currentFilter = "today";
 
-  // Справочник продуктов с иллюстрациями категорий (иконки Font Awesome)
+  // ---------- СПРАВОЧНИК ПРОДУКТОВ ----------
   const productCatalog = [
     { category: "Фрукты", product: "Яблоко", timeIntro: "с 5-6 мес", icon: "fa-apple-alt" },
     { category: "Фрукты", product: "Груша", timeIntro: "с 5-6 мес", icon: "fa-apple-alt" },
@@ -244,12 +218,14 @@
     { category: "Орехи и злаки", product: "Рисовая каша", timeIntro: "с 5 мес", icon: "fa-seedling" }
   ];
 
-  // DOM
+  // ---------- DOM ЭЛЕМЕНТЫ ----------
+  // Общие
   const childNameInput = document.getElementById("childName");
   const childBirthdayInput = document.getElementById("childBirthday");
   const saveProfileBtn = document.getElementById("saveProfileBtn");
   const reminderBlock = document.getElementById("reminderBlock");
   const reminderText = document.getElementById("reminderText");
+  // Форма
   const dateInput = document.getElementById("feedDate");
   const timeInput = document.getElementById("feedTime");
   const productInput = document.getElementById("productName");
@@ -259,17 +235,22 @@
   const submitBtn = document.getElementById("submitBtn");
   const cancelEditBtn = document.getElementById("cancelEditBtn");
   const clearAllBtn = document.getElementById("clearAllBtn");
-  const entriesContainer = document.getElementById("entriesContainer");
   const statsArea = document.getElementById("statsArea");
   const filterTodayBtn = document.getElementById("filterTodayBtn");
   const filterAllBtn = document.getElementById("filterAllBtn");
+  const entriesContainer = document.getElementById("entriesContainer");
   const productsSummaryDiv = document.getElementById("productsSummary");
   const catalogGridContainer = document.getElementById("catalogGridContainer");
-  const accordionHeader = document.getElementById("catalogHeader");
-  const accordionContent = document.getElementById("catalogContent");
-  const accordionIcon = document.getElementById("accordionIcon");
+  // Вкладки
+  const tabBtns = document.querySelectorAll(".tab-btn");
+  const tabContents = document.querySelectorAll(".tab-content");
 
-  // ---------- Профиль ----------
+  // ---------- ФУНКЦИИ (ОПТИМИЗИРОВАННЫЕ) ----------
+  function getTodayDateString() { return new Date().toISOString().slice(0,10); }
+  function getCurrentTimeString() { return new Date().toLocaleTimeString('ru-RU', { hour:'2-digit', minute:'2-digit', hour12:false }); }
+  function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m])); }
+
+  // Профиль
   function loadProfile() {
     const profile = localStorage.getItem(PROFILE_KEY);
     if (profile) {
@@ -295,220 +276,253 @@
     if (today.getDate() < birthDate.getDate()) months--;
     return months;
   }
-  function getIntroducedProductsSet() {
-    const introduced = new Set();
-    feedingEntries.forEach(entry => {
-      const name = entry.product.trim().toLowerCase();
-      if (name) introduced.add(name);
-    });
-    return introduced;
+  function getIntroducedSet() {
+    const set = new Set();
+    feedingEntries.forEach(e => set.add(e.product.trim().toLowerCase()));
+    return set;
   }
-  function parseMinAge(ageStr) {
-    const match = ageStr.match(/(\d+)/);
-    return match ? parseInt(match[1]) : 0;
-  }
+  function parseMinAge(ageStr) { const m = ageStr.match(/\d+/); return m ? parseInt(m[0]) : 0; }
   function getRecommendation() {
     const ageMonths = getChildAgeMonths();
-    if (ageMonths === null) return { hasProfile: false, message: "Заполните дату рождения, чтобы получать рекомендации." };
-    const introduced = getIntroducedProductsSet();
-    const available = productCatalog.filter(p => {
-      const minAge = parseMinAge(p.timeIntro);
-      if (minAge > ageMonths) return false;
-      return !introduced.has(p.product.toLowerCase());
-    });
-    if (available.length === 0) return { hasProfile: true, message: "Все подходящие по возрасту продукты уже введены! Отлично!" };
+    if (ageMonths === null) return { hasProfile: false, message: "Заполните дату рождения в профиле." };
+    const introduced = getIntroducedSet();
+    const available = productCatalog.filter(p => parseMinAge(p.timeIntro) <= ageMonths && !introduced.has(p.product.toLowerCase()));
+    if (available.length === 0) return { hasProfile: true, message: "Все подходящие продукты уже введены! 🎉" };
     available.sort((a,b) => parseMinAge(a.timeIntro) - parseMinAge(b.timeIntro));
     const next = available[0];
     return { hasProfile: true, product: next.product, time: next.timeIntro, message: `${next.product} (рекомендуется ${next.timeIntro})` };
   }
   function updateReminder() {
     const rec = getRecommendation();
-    const childName = childNameInput.value.trim();
-    const greeting = childName ? `${childName}, ` : "";
-    if (!rec.hasProfile) {
-      reminderBlock.style.display = "block";
-      reminderText.innerHTML = `<i class="fas fa-edit"></i> ${greeting}${rec.message}`;
-      return;
-    }
-    if (!rec.product) {
-      reminderText.innerHTML = `${greeting}🎉 Все продукты по возрасту введены! Молодец!`;
-    } else {
-      reminderText.innerHTML = `${greeting}👶 Следующий продукт: <strong>${rec.product}</strong> (рекомендуется ${rec.time}). Попробуйте ввести!`;
-    }
+    const name = childNameInput.value.trim();
+    const greeting = name ? `${name}, ` : "";
     reminderBlock.style.display = "block";
+    if (!rec.hasProfile) reminderText.innerHTML = `<i class="fas fa-edit"></i> ${greeting}${rec.message}`;
+    else if (!rec.product) reminderText.innerHTML = `${greeting}🎉 ${rec.message}`;
+    else reminderText.innerHTML = `${greeting}👶 Следующий продукт: <strong>${rec.product}</strong> (${rec.time})`;
   }
 
-  // ---------- Основные функции трекера ----------
-  function getTodayDateString() { return new Date().toISOString().slice(0,10); }
-  function getCurrentTimeString() { return new Date().toLocaleTimeString('ru-RU', { hour:'2-digit', minute:'2-digit', hour12:false }); }
-  function formatDisplayDate(dateStr) {
-    if (dateStr === getTodayDateString()) return "Сегодня";
-    const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
-    if (dateStr === yesterday.toISOString().slice(0,10)) return "Вчера";
-    const [y,m,d] = dateStr.split("-"); return `${d}.${m}.${y}`;
-  }
-  function persistData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(feedingEntries)); }
+  // Работа с записями
+  function persistEntries() { localStorage.setItem(STORAGE_KEY, JSON.stringify(feedingEntries)); }
   function loadEntries() {
     const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) { feedingEntries = JSON.parse(stored); feedingEntries = feedingEntries.map(e => ({ ...e, reaction: e.reaction || 'good' })); }
-    else {
+    if (stored) {
+      feedingEntries = JSON.parse(stored);
+      feedingEntries.forEach(e => { if (!e.reaction) e.reaction = 'good'; });
+    } else {
       const today = getTodayDateString();
-      const yesterday = (()=>{let d=new Date();d.setDate(d.getDate()-1);return d.toISOString().slice(0,10);})();
+      const yesterday = (() => { let d = new Date(); d.setDate(d.getDate()-1); return d.toISOString().slice(0,10); })();
       feedingEntries = [
         { id: Date.now()+1, date: today, time: "09:30", product: "Кабачок", amount: 25, unit: "г", reaction: "good" },
         { id: Date.now()+2, date: today, time: "12:15", product: "Яблоко", amount: 30, unit: "г", reaction: "good" },
         { id: Date.now()+3, date: yesterday, time: "17:45", product: "Гречневая каша", amount: 45, unit: "г", reaction: "good" },
         { id: Date.now()+4, date: yesterday, time: "11:20", product: "Брокколи", amount: 20, unit: "г", reaction: "bad" }
       ];
-      persistData();
+      persistEntries();
     }
   }
   function getSelectedReaction() { for(let r of reactionRadios) if(r.checked) return r.value; return 'good'; }
-  function setSelectedReaction(val) { for(let r of reactionRadios) if(r.value===val) r.checked=true; }
-  function getProductStatusMap() {
-    const map = new Map();
-    feedingEntries.forEach(entry => {
-      const norm = entry.product.trim().toLowerCase();
-      if(!norm) return;
-      if(!map.has(norm)) map.set(norm, { hasBad: false, hasAny: false });
-      const st = map.get(norm);
-      st.hasAny = true;
-      if(entry.reaction === 'bad') st.hasBad = true;
-    });
-    return map;
+  function setSelectedReaction(val) { for(let r of reactionRadios) if(r.value === val) r.checked = true; }
+
+  // Статистика
+  function updateStats() {
+    const todayCount = feedingEntries.filter(e => e.date === getTodayDateString()).length;
+    statsArea.innerHTML = `<div class="stat-badge"><i class="fas fa-calendar-day"></i> Сегодня: ${todayCount}</div><div class="stat-badge"><i class="fas fa-database"></i> Всего: ${feedingEntries.length}</div>`;
   }
-  // Новая функция рендера справочника в виде сетки с категориями и иконками
-  function renderCatalogGrid() {
-    const statusMap = getProductStatusMap();
-    const categories = {};
-    productCatalog.forEach(item => {
-      if (!categories[item.category]) categories[item.category] = { icon: item.icon, products: [] };
-      categories[item.category].products.push(item);
+
+  // Сводка продуктов (можно/нельзя)
+  function updateProductsSummary() {
+    const map = new Map();
+    feedingEntries.forEach(e => {
+      const key = e.product.trim().toLowerCase();
+      if (!key) return;
+      if (!map.has(key)) map.set(key, { good:0, bad:0, name: e.product.trim() });
+      const d = map.get(key);
+      if (e.reaction === 'good') d.good++; else d.bad++;
     });
+    const good = [], bad = [];
+    for (let [,data] of map) {
+      if (data.bad > 0) bad.push(data.name);
+      else if (data.good > 0) good.push(data.name);
+    }
+    good.sort((a,b)=>a.localeCompare(b));
+    bad.sort((a,b)=>a.localeCompare(b));
+    productsSummaryDiv.innerHTML = `
+      <div><h4><i class="fas fa-check-circle" style="color:#2b7a4b;"></i> Можно (нет плохой реакции)</h4><div>${good.length ? good.map(p=>`<span class="product-tag good">${escapeHtml(p)}</span>`).join('') : '<div class="empty-state">Нет</div>'}</div></div>
+      <div style="margin-top:20px;"><h4><i class="fas fa-exclamation-triangle" style="color:#c46b5e;"></i> Нельзя (была плохая реакция)</h4><div>${bad.length ? bad.map(p=>`<span class="product-tag bad">${escapeHtml(p)}</span>`).join('') : '<div class="empty-state">Нет</div>'}</div></div>
+    `;
+  }
+
+  // Рендер справочника (сетка с категориями)
+  function renderCatalogGrid() {
+    const statusMap = new Map();
+    feedingEntries.forEach(e => {
+      const norm = e.product.trim().toLowerCase();
+      if (!norm) return;
+      if (!statusMap.has(norm)) statusMap.set(norm, { hasBad: false, hasAny: false });
+      const st = statusMap.get(norm);
+      st.hasAny = true;
+      if (e.reaction === 'bad') st.hasBad = true;
+    });
+    const cats = {};
+    productCatalog.forEach(p => { if (!cats[p.category]) cats[p.category] = []; cats[p.category].push(p); });
     let html = '';
-    for (let [catName, catData] of Object.entries(categories)) {
-      let iconClass = "fa-apple-alt";
-      if (catName === "Фрукты") iconClass = "fa-apple-alt";
-      else if (catName === "Овощи") iconClass = "fa-carrot";
-      else if (catName === "Орехи и злаки") iconClass = "fa-seedling";
-      else iconClass = catData.icon || "fa-leaf";
-      html += `<div class="category-block">
-        <div class="category-title">
-          <div class="category-icon"><i class="fas ${iconClass}"></i></div>
-          <span>${escapeHtml(catName)}</span>
-        </div>
-        <div class="products-grid">`;
-      for (let prod of catData.products) {
+    for (let [catName, prods] of Object.entries(cats)) {
+      let icon = "fa-apple-alt";
+      if (catName === "Фрукты") icon = "fa-apple-alt";
+      else if (catName === "Овощи") icon = "fa-carrot";
+      else if (catName === "Орехи и злаки") icon = "fa-seedling";
+      html += `<div class="category-block"><div class="category-title"><div class="category-icon"><i class="fas ${icon}"></i></div><span>${escapeHtml(catName)}</span></div><div class="products-grid">`;
+      prods.forEach(prod => {
         const norm = prod.product.toLowerCase();
         const st = statusMap.get(norm);
-        let statusText = "", statusClass = "status-not";
-        if (!st || !st.hasAny) { statusText = "❌ Не введён"; statusClass = "status-not"; }
-        else if (st.hasBad) { statusText = "⚠️ Введён (плохо)"; statusClass = "status-introduced-bad"; }
-        else { statusText = "✅ Введён (хорошо)"; statusClass = "status-introduced-ok"; }
-        html += `<div class="product-card">
-          <div class="product-info">
-            <div class="product-name">${escapeHtml(prod.product)}</div>
-            <div class="product-time">Рек. введение: ${escapeHtml(prod.timeIntro)}</div>
-          </div>
-          <div class="product-status ${statusClass}">${statusText}</div>
-        </div>`;
-      }
+        let statusText = "❌ Не введён", statusClass = "status-not";
+        if (st && st.hasAny) {
+          if (st.hasBad) { statusText = "⚠️ Введён (плохо)"; statusClass = "status-introduced-bad"; }
+          else { statusText = "✅ Введён (хорошо)"; statusClass = "status-introduced-ok"; }
+        }
+        html += `<div class="product-card"><div class="product-info"><div class="product-name">${escapeHtml(prod.product)}</div><div class="product-time">Рек. введение: ${escapeHtml(prod.timeIntro)}</div></div><div class="product-status ${statusClass}">${statusText}</div></div>`;
+      });
       html += `</div></div>`;
     }
     catalogGridContainer.innerHTML = html;
   }
 
-  function updateProductsSummary() {
-    const map = new Map();
-    feedingEntries.forEach(e => {
-      const key = e.product.trim().toLowerCase();
-      if(!key) return;
-      if(!map.has(key)) map.set(key, { good:0, bad:0, name:e.product.trim() });
-      const d = map.get(key);
-      if(e.reaction === 'good') d.good++; else d.bad++;
-    });
-    const good = [], bad = [];
-    for(let [_,data] of map) { if(data.bad>0) bad.push(data.name); else if(data.good>0) good.push(data.name); }
-    good.sort((a,b)=>a.localeCompare(b)); bad.sort((a,b)=>a.localeCompare(b));
-    let html = `<div class="product-category"><h4><i class="fas fa-check-circle" style="color:#2b7a4b;"></i> Можно (нет плохой реакции)</h4><div>${good.length ? good.map(p=>`<span class="product-tag good">${escapeHtml(p)}</span>`).join('') : '<div class="empty-state" style="padding:12px;">Нет</div>'}</div></div><div class="product-category"><h4><i class="fas fa-exclamation-triangle"></i> Нельзя (была плохая реакция)</h4><div>${bad.length ? bad.map(p=>`<span class="product-tag bad">${escapeHtml(p)}</span>`).join('') : '<div class="empty-state" style="padding:12px;">Нет</div>'}</div></div>`;
-    productsSummaryDiv.innerHTML = html;
-  }
-  function getFilteredSortedEntries() {
+  // Рендер списка записей
+  function renderEntries() {
     let filtered = [...feedingEntries];
-    if(currentFilter==="today") filtered = filtered.filter(e=>e.date===getTodayDateString());
-    filtered.sort((a,b)=>(b.date+"T"+b.time).localeCompare(a.date+"T"+a.time));
-    return filtered;
+    if (currentFilter === "today") filtered = filtered.filter(e => e.date === getTodayDateString());
+    filtered.sort((a,b) => (b.date+"T"+b.time).localeCompare(a.date+"T"+a.time));
+    if (!filtered.length) { entriesContainer.innerHTML = `<div class="empty-state">${currentFilter === "today" ? "Сегодня нет записей" : "Нет записей"}</div>`; return; }
+    entriesContainer.innerHTML = filtered.map(entry => `
+      <div class="meal-item" data-id="${entry.id}">
+        <div class="meal-info">
+          <span class="meal-time">${escapeHtml(entry.time)}</span>
+          <span class="meal-product">${escapeHtml(entry.product)}</span>
+          ${entry.amount>0 ? `<span class="meal-amount">${entry.amount} ${entry.unit}</span>` : ''}
+          <span class="reaction-badge ${entry.reaction==='good' ? 'reaction-good' : 'reaction-bad'}">${entry.reaction==='good' ? '<i class="fas fa-smile-wink"></i> хорошо' : '<i class="fas fa-frown"></i> плохо'}</span>
+          <span class="meal-date">${entry.date === getTodayDateString() ? "Сегодня" : (()=>{let d=entry.date.split("-"); return `${d[2]}.${d[1]}.${d[0]}`;})()}</span>
+        </div>
+        <div class="meal-actions">
+          <span class="action-icon edit-action" data-id="${entry.id}"><i class="fas fa-pen"></i></span>
+          <span class="action-icon delete" data-id="${entry.id}"><i class="fas fa-trash-can"></i></span>
+        </div>
+      </div>
+    `).join('');
+    document.querySelectorAll('.edit-action').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); startEdit(Number(btn.dataset.id)); }));
+    document.querySelectorAll('.action-icon.delete').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); deleteEntry(Number(btn.dataset.id)); }));
   }
-  function renderFeedList() {
-    const list = getFilteredSortedEntries();
-    if(!list.length) { entriesContainer.innerHTML = `<div class="empty-state">${currentFilter==="today" ? "Сегодня нет записей" : "Нет записей"}</div>`; return; }
-    entriesContainer.innerHTML = list.map(entry => `<div class="meal-item" data-id="${entry.id}"><div class="meal-info"><span class="meal-time">${escapeHtml(entry.time)}</span><span class="meal-product">${escapeHtml(entry.product)}</span>${entry.amount>0?`<span class="meal-amount">${entry.amount} ${entry.unit}</span>`:''}<span class="reaction-badge ${entry.reaction==='good'?'reaction-good':'reaction-bad'}">${entry.reaction==='good'?'<i class="fas fa-smile-wink"></i> хорошо':'<i class="fas fa-frown"></i> плохо'}</span><span class="meal-date">${formatDisplayDate(entry.date)}</span></div><div class="meal-actions"><span class="action-icon edit-action" data-id="${entry.id}"><i class="fas fa-pen"></i></span><span class="action-icon delete" data-id="${entry.id}"><i class="fas fa-trash-can"></i></span></div></div>`).join('');
-    document.querySelectorAll('.edit-action').forEach(btn=>btn.addEventListener('click',(e)=>{e.stopPropagation();startEditEntry(Number(btn.dataset.id));}));
-    document.querySelectorAll('.action-icon.delete').forEach(btn=>btn.addEventListener('click',(e)=>{e.stopPropagation();deleteEntryById(Number(btn.dataset.id));}));
-  }
-  function startEditEntry(id) {
-    const entry = feedingEntries.find(e=>e.id===id);
-    if(!entry) return;
-    currentEditId=id;
-    dateInput.value=entry.date; timeInput.value=entry.time; productInput.value=entry.product; amountInput.value=entry.amount; unitSelect.value=entry.unit;
+
+  // CRUD операции
+  function startEdit(id) {
+    const entry = feedingEntries.find(e => e.id === id);
+    if (!entry) return;
+    currentEditId = id;
+    dateInput.value = entry.date;
+    timeInput.value = entry.time;
+    productInput.value = entry.product;
+    amountInput.value = entry.amount;
+    unitSelect.value = entry.unit;
     setSelectedReaction(entry.reaction);
-    submitBtn.innerHTML='<i class="fas fa-pen"></i> Обновить'; cancelEditBtn.style.display='inline-flex';
+    submitBtn.innerHTML = '<i class="fas fa-pen"></i> Обновить';
+    cancelEditBtn.style.display = 'inline-flex';
   }
-  function addNewEntry() {
-    const dateVal=dateInput.value, timeVal=timeInput.value, productVal=productInput.value.trim();
-    let amountVal=parseFloat(amountInput.value);
-    if(!dateVal||!timeVal||!productVal){alert("Заполните дату, время и продукт");return;}
-    if(isNaN(amountVal)) amountVal=0;
-    feedingEntries.push({id:Date.now(), date:dateVal, time:timeVal, product:productVal, amount:amountVal, unit:unitSelect.value, reaction:getSelectedReaction()});
-    persistData(); resetFormAndEditing(); renderAllAndStats();
+  function addOrUpdate() {
+    const dateVal = dateInput.value, timeVal = timeInput.value, productVal = productInput.value.trim();
+    let amountVal = parseFloat(amountInput.value);
+    if (!dateVal || !timeVal || !productVal) { alert("Заполните дату, время и продукт"); return; }
+    if (isNaN(amountVal)) amountVal = 0;
+    const reaction = getSelectedReaction();
+    if (currentEditId !== null) {
+      const idx = feedingEntries.findIndex(e => e.id === currentEditId);
+      if (idx !== -1) feedingEntries[idx] = { ...feedingEntries[idx], date: dateVal, time: timeVal, product: productVal, amount: amountVal, unit: unitSelect.value, reaction };
+      currentEditId = null;
+    } else {
+      feedingEntries.push({ id: Date.now(), date: dateVal, time: timeVal, product: productVal, amount: amountVal, unit: unitSelect.value, reaction });
+    }
+    persistEntries();
+    resetForm();
+    fullRender();
   }
-  function updateCurrentEntry() {
-    if(!currentEditId) return;
-    const dateVal=dateInput.value, timeVal=timeInput.value, productVal=productInput.value.trim();
-    let amountVal=parseFloat(amountInput.value);
-    if(!dateVal||!timeVal||!productVal){alert("Заполните поля");return;}
-    if(isNaN(amountVal)) amountVal=0;
-    const idx=feedingEntries.findIndex(e=>e.id===currentEditId);
-    if(idx!==-1) feedingEntries[idx]={...feedingEntries[idx], date:dateVal, time:timeVal, product:productVal, amount:amountVal, unit:unitSelect.value, reaction:getSelectedReaction()};
-    persistData(); resetFormAndEditing(); renderAllAndStats();
+  function deleteEntry(id) {
+    if (confirm("Удалить запись?")) {
+      feedingEntries = feedingEntries.filter(e => e.id !== id);
+      if (currentEditId === id) resetForm();
+      persistEntries();
+      fullRender();
+    }
   }
-  function deleteEntryById(id) { if(confirm("Удалить?")){ feedingEntries=feedingEntries.filter(e=>e.id!==id); if(currentEditId===id) resetFormAndEditing(); persistData(); renderAllAndStats(); } }
-  function clearAllData() { if(confirm("Удалить всё?")){ feedingEntries=[]; persistData(); resetFormAndEditing(); renderAllAndStats(); } }
-  function resetFormAndEditing() {
-    currentEditId=null;
-    dateInput.value=getTodayDateString(); timeInput.value=getCurrentTimeString(); productInput.value=""; amountInput.value="0"; unitSelect.value="г";
+  function clearAll() {
+    if (confirm("Удалить ВСЕ записи?")) { feedingEntries = []; persistEntries(); resetForm(); fullRender(); }
+  }
+  function resetForm() {
+    currentEditId = null;
+    dateInput.value = getTodayDateString();
+    timeInput.value = getCurrentTimeString();
+    productInput.value = "";
+    amountInput.value = "0";
+    unitSelect.value = "г";
     setSelectedReaction('good');
-    submitBtn.innerHTML='<i class="fas fa-save"></i> Добавить'; cancelEditBtn.style.display='none';
+    submitBtn.innerHTML = '<i class="fas fa-save"></i> Добавить';
+    cancelEditBtn.style.display = 'none';
   }
   function setFilter(mode) {
-    currentFilter=mode;
-    if(mode==="today"){filterTodayBtn.classList.add("active");filterAllBtn.classList.remove("active");}
-    else{filterAllBtn.classList.add("active");filterTodayBtn.classList.remove("active");}
-    renderFeedList();
+    currentFilter = mode;
+    if (mode === "today") { filterTodayBtn.classList.add("active"); filterAllBtn.classList.remove("active"); }
+    else { filterAllBtn.classList.add("active"); filterTodayBtn.classList.remove("active"); }
+    renderEntries();
   }
-  function updateStatistics() {
-    const todayCount=feedingEntries.filter(e=>e.date===getTodayDateString()).length;
-    statsArea.innerHTML=`<div class="stat-badge"><i class="fas fa-calendar-day"></i> Сегодня: ${todayCount}</div><div class="stat-badge"><i class="fas fa-database"></i> Всего: ${feedingEntries.length}</div>`;
+  function fullRender() {
+    updateStats();
+    updateProductsSummary();
+    renderCatalogGrid();
+    renderEntries();
+    updateReminder();
   }
-  function renderAllAndStats() {
-    updateStatistics(); updateProductsSummary(); renderFeedList(); renderCatalogGrid(); updateReminder();
+
+  // Переключение вкладок
+  function switchTab(tabId) {
+    tabContents.forEach(content => content.classList.remove("active"));
+    document.getElementById(`tab-${tabId}`).classList.add("active");
+    tabBtns.forEach(btn => {
+      btn.classList.remove("active");
+      if (btn.getAttribute("data-tab") === tabId) btn.classList.add("active");
+    });
+    // Обновляем справочник и сводку при переключении (на всякий случай)
+    if (tabId === "catalog") {
+      updateProductsSummary();
+      renderCatalogGrid();
+    }
+    if (tabId === "diary") {
+      renderEntries();
+      updateReminder();
+    }
   }
-  function bindEvents() {
-    submitBtn.onclick=()=>{if(currentEditId!==null) updateCurrentEntry(); else addNewEntry();};
-    cancelEditBtn.onclick=resetFormAndEditing;
-    clearAllBtn.onclick=clearAllData;
-    filterTodayBtn.onclick=()=>setFilter("today");
-    filterAllBtn.onclick=()=>setFilter("all");
-    saveProfileBtn.onclick=saveProfile;
-    accordionHeader.addEventListener('click',()=>{accordionContent.classList.toggle('open'); accordionIcon.classList.toggle('fa-chevron-down'); accordionIcon.classList.toggle('fa-chevron-up');});
-  }
-  function escapeHtml(str){if(!str)return ''; return str.replace(/[&<>]/g,m=>{if(m==='&')return '&amp;'; if(m==='<')return '&lt;'; if(m==='>')return '&gt;'; return m;});}
+
+  // Инициализация и привязка событий
   function init() {
-    loadEntries(); loadProfile();
-    dateInput.value=getTodayDateString(); timeInput.value=getCurrentTimeString();
-    setSelectedReaction('good');
-    bindEvents(); setFilter("today"); renderAllAndStats();
+    loadEntries();
+    loadProfile();
+    resetForm();
+    bindEvents();
+    fullRender();
+    // Активная вкладка по умолчанию diary
+    switchTab("diary");
   }
+
+  function bindEvents() {
+    submitBtn.onclick = addOrUpdate;
+    cancelEditBtn.onclick = resetForm;
+    clearAllBtn.onclick = clearAll;
+    filterTodayBtn.onclick = () => setFilter("today");
+    filterAllBtn.onclick = () => setFilter("all");
+    saveProfileBtn.onclick = () => { saveProfile(); fullRender(); };
+    tabBtns.forEach(btn => {
+      btn.addEventListener("click", () => switchTab(btn.getAttribute("data-tab")));
+    });
+  }
+
+  // Запуск
   init();
 </script>
 </body>
