@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>ПрикормТрекер :: реакция + списки продуктов</title>
+  <title>ПрикормТрекер+Справочник</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
   <style>
@@ -22,7 +22,6 @@
       max-width: 1200px;
       margin: 0 auto;
     }
-    /* две колонки для главного контента после формы */
     .two-columns {
       display: flex;
       gap: 24px;
@@ -55,10 +54,6 @@
       display: inline-flex;
       align-items: center;
       gap: 10px;
-    }
-    h1 i {
-      background: none;
-      color: #3e9f6b;
     }
     .subhead {
       color: #5f7f6e;
@@ -139,12 +134,8 @@
       height: 18px;
       accent-color: #2b7a4b;
     }
-    .good-label {
-      color: #2c7a4d;
-    }
-    .bad-label {
-      color: #c46b5e;
-    }
+    .good-label { color: #2c7a4d; }
+    .bad-label { color: #c46b5e; }
     .button-group {
       display: flex;
       gap: 12px;
@@ -252,14 +243,8 @@
       align-items: center;
       gap: 5px;
     }
-    .reaction-good {
-      background: #e0f3e4;
-      color: #1f6e42;
-    }
-    .reaction-bad {
-      background: #fee9e5;
-      color: #c55a4a;
-    }
+    .reaction-good { background: #e0f3e4; color: #1f6e42; }
+    .reaction-bad { background: #fee9e5; color: #c55a4a; }
     .meal-actions {
       display: flex;
       gap: 12px;
@@ -301,16 +286,8 @@
       font-size: 0.8rem;
       font-weight: 500;
     }
-    .product-tag.good {
-      background: #e1f3e6;
-      color: #226e44;
-      border-left: 3px solid #2b7a4b;
-    }
-    .product-tag.bad {
-      background: #ffe6e2;
-      color: #bc5a4a;
-      border-left: 3px solid #d96c5e;
-    }
+    .product-tag.good { background: #e1f3e6; color: #226e44; border-left: 3px solid #2b7a4b; }
+    .product-tag.bad { background: #ffe6e2; color: #bc5a4a; border-left: 3px solid #d96c5e; }
     .empty-state {
       text-align: center;
       padding: 40px 20px;
@@ -330,13 +307,70 @@
       height: 1px;
       background: #e2ece6;
     }
+    /* Аккордеон для справочника */
+    .accordion {
+      background: #ffffff;
+      border-radius: 28px;
+      margin-top: 1rem;
+      overflow: hidden;
+      border: 1px solid #e9f0ec;
+    }
+    .accordion-header {
+      background: #f9fdfa;
+      padding: 1rem 1.5rem;
+      font-weight: 700;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: 0.2s;
+      color: #2b7a4b;
+    }
+    .accordion-header:hover {
+      background: #eff7f2;
+    }
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+      padding: 0 1.5rem;
+    }
+    .accordion-content.open {
+      max-height: 800px;
+      padding: 1rem 1.5rem 1.5rem 1.5rem;
+      transition: max-height 0.4s ease-in;
+    }
+    .product-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .product-table th, .product-table td {
+      text-align: left;
+      padding: 12px 8px;
+      border-bottom: 1px solid #eef2f0;
+      vertical-align: top;
+    }
+    .product-table th {
+      font-weight: 600;
+      color: #4d7362;
+      font-size: 0.8rem;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 30px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    .status-introduced-ok { background: #e0f3e4; color: #1b6e3f; }
+    .status-introduced-bad { background: #fee2dd; color: #bc4e3a; }
+    .status-not { background: #f1f3f4; color: #7f8e86; }
     @media (max-width: 760px) {
-      .two-columns {
-        flex-direction: column;
-      }
-      .form-grid .input-group {
-        min-width: 100%;
-      }
+      .two-columns { flex-direction: column; }
+      .product-table th, .product-table td { font-size: 0.8rem; padding: 8px 4px; }
     }
   </style>
 </head>
@@ -347,7 +381,7 @@
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
       <div>
         <h1><i class="fas fa-baby-carriage"></i> ПрикормТрекер+</h1>
-        <div class="subhead">Реакция на новые продукты + списки «можно / нельзя»</div>
+        <div class="subhead">Реакция + справочник продуктов по категориям</div>
       </div>
       <div class="stats-row" id="statsArea"></div>
     </div>
@@ -380,7 +414,7 @@
     </div>
   </div>
 
-  <!-- две колонки: список и сводка по продуктам -->
+  <!-- две колонки: список и сводка -->
   <div class="two-columns">
     <div class="left-col">
       <div class="filter-bar">
@@ -398,25 +432,68 @@
           <i class="fas fa-clipboard-list" style="color:#3e9f6b;"></i>
           <span style="font-weight: 700;">Сводка по продуктам</span>
         </div>
-        <div id="productsSummary">
-          <!-- Динамически: можно / нельзя -->
-        </div>
+        <div id="productsSummary"></div>
         <hr>
-        <div class="subhead" style="font-size: 0.7rem;"><i class="fas fa-lightbulb"></i> Если была хоть одна плохая реакция — продукт попадает в «нельзя».</div>
+        <div class="subhead" style="font-size: 0.7rem;"><i class="fas fa-lightbulb"></i> Если была плохая реакция — продукт в «нельзя».</div>
       </div>
     </div>
   </div>
-  <footer><i class="fas fa-heart"></i> Оценка реакции помогает видеть безопасные продукты</footer>
+
+  <!-- НОВЫЙ БЛОК: справочник продуктов с аккордеоном -->
+  <div class="accordion" id="catalogAccordion">
+    <div class="accordion-header" id="catalogHeader">
+      <span><i class="fas fa-book-open"></i> Справочник продуктов (категории + время введения)</span>
+      <i class="fas fa-chevron-down" id="accordionIcon"></i>
+    </div>
+    <div class="accordion-content" id="catalogContent">
+      <div style="overflow-x: auto;">
+        <table class="product-table" id="productCatalogTable">
+          <thead>
+            <tr><th>Категория</th><th>Продукт</th><th>Рекомендуемое время введения</th><th>Статус введения</th></tr>
+          </thead>
+          <tbody id="catalogTableBody">
+            <!-- заполняется JS -->
+          </tbody>
+        </table>
+      </div>
+      <div class="subhead" style="margin-top: 12px; font-size: 0.7rem;">* Рекомендации примерные, ориентируйтесь на педиатра. Статус определяется на основе записей в трекере.</div>
+    </div>
+  </div>
+
+  <footer><i class="fas fa-heart"></i> Оценка реакции + справочник продуктов для удобного ввода</footer>
 </div>
 
 <script>
   const STORAGE_KEY = "baby_solid_food_tracker_v2";
-
   let feedingEntries = [];
   let currentEditId = null;
   let currentFilter = "today";
 
-  // DOM
+  // ---- статический справочник продуктов ----
+  const productCatalog = [
+    // Фрукты
+    { category: "Фрукты", product: "Яблоко", timeIntro: "с 5-6 месяцев" },
+    { category: "Фрукты", product: "Груша", timeIntro: "с 5-6 месяцев" },
+    { category: "Фрукты", product: "Банан", timeIntro: "с 5-6 месяцев" },
+    { category: "Фрукты", product: "Персик", timeIntro: "с 7 месяцев" },
+    { category: "Фрукты", product: "Абрикос", timeIntro: "с 8 месяцев" },
+    // Овощи
+    { category: "Овощи", product: "Кабачок", timeIntro: "с 4-5 месяцев" },
+    { category: "Овощи", product: "Брокколи", timeIntro: "с 5 месяцев" },
+    { category: "Овощи", product: "Цветная капуста", timeIntro: "с 5 месяцев" },
+    { category: "Овощи", product: "Морковь", timeIntro: "с 6 месяцев" },
+    { category: "Овощи", product: "Тыква", timeIntro: "с 6 месяцев" },
+    { category: "Овощи", product: "Картофель", timeIntro: "с 6 месяцев" },
+    // Орехи и злаки
+    { category: "Орехи и злаки", product: "Грецкий орех", timeIntro: "после 12 месяцев" },
+    { category: "Орехи и злаки", product: "Миндаль", timeIntro: "после 12 месяцев" },
+    { category: "Орехи и злаки", product: "Фундук", timeIntro: "после 12 месяцев" },
+    { category: "Орехи и злаки", product: "Овсяная каша", timeIntro: "с 6 месяцев" },
+    { category: "Орехи и злаки", product: "Гречневая каша", timeIntro: "с 5 месяцев" },
+    { category: "Орехи и злаки", product: "Рисовая каша", timeIntro: "с 5 месяцев" }
+  ];
+
+  // ---- DOM элементы ----
   const dateInput = document.getElementById("feedDate");
   const timeInput = document.getElementById("feedTime");
   const productInput = document.getElementById("productName");
@@ -431,78 +508,95 @@
   const filterTodayBtn = document.getElementById("filterTodayBtn");
   const filterAllBtn = document.getElementById("filterAllBtn");
   const productsSummaryDiv = document.getElementById("productsSummary");
+  const catalogTableBody = document.getElementById("catalogTableBody");
+  const accordionHeader = document.getElementById("catalogHeader");
+  const accordionContent = document.getElementById("catalogContent");
+  const accordionIcon = document.getElementById("accordionIcon");
 
-  // helpers
-  function getTodayDateString() {
-    const today = new Date();
-    return today.toISOString().slice(0,10);
-  }
-  function getCurrentTimeString() {
-    return new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', hour12: false });
-  }
+  // ---- общие функции ----
+  function getTodayDateString() { return new Date().toISOString().slice(0,10); }
+  function getCurrentTimeString() { return new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute:'2-digit', hour12:false }); }
   function formatDisplayDate(dateStr) {
-    if (!dateStr) return "";
     if (dateStr === getTodayDateString()) return "Сегодня";
     const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
     if (dateStr === yesterday.toISOString().slice(0,10)) return "Вчера";
     const [y,m,d] = dateStr.split("-");
     return `${d}.${m}.${y}`;
   }
-
   function persistData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(feedingEntries)); }
-
   function loadInitialData() {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       feedingEntries = JSON.parse(stored);
-      // миграция: добавить поле reaction если отсутствует
-      feedingEntries = feedingEntries.map(entry => ({
-        ...entry,
-        reaction: entry.reaction || (entry.reaction === undefined ? 'good' : entry.reaction)
-      }));
+      feedingEntries = feedingEntries.map(e => ({ ...e, reaction: e.reaction || 'good' }));
     } else {
       const today = getTodayDateString();
       const yesterday = (() => { let d = new Date(); d.setDate(d.getDate()-1); return d.toISOString().slice(0,10); })();
       feedingEntries = [
         { id: Date.now()+1, date: today, time: "09:30", product: "Кабачковое пюре", amount: 25, unit: "г", reaction: "good" },
         { id: Date.now()+2, date: today, time: "12:15", product: "Яблоко", amount: 30, unit: "г", reaction: "good" },
-        { id: Date.now()+3, date: yesterday, time: "17:45", product: "Безмолочная каша", amount: 45, unit: "г", reaction: "good" },
+        { id: Date.now()+3, date: yesterday, time: "17:45", product: "Гречневая каша", amount: 45, unit: "г", reaction: "good" },
         { id: Date.now()+4, date: yesterday, time: "11:20", product: "Брокколи", amount: 20, unit: "г", reaction: "bad" }
       ];
       persistData();
     }
   }
 
-  function getSelectedReaction() {
-    let val = 'good';
-    for (let radio of reactionRadios) if (radio.checked) { val = radio.value; break; }
-    return val;
-  }
-  function setSelectedReaction(value) {
-    for (let radio of reactionRadios) if (radio.value === value) radio.checked = true;
+  function getSelectedReaction() { for (let r of reactionRadios) if (r.checked) return r.value; return 'good'; }
+  function setSelectedReaction(val) { for (let r of reactionRadios) if (r.value === val) r.checked = true; }
+
+  // анализ всех продуктов: возвращает Map нормализованное имя -> { hasReactionBad, hasAnyEntry }
+  function getProductStatusMap() {
+    const map = new Map(); // key: normalized product name (lowercase), value: { hasBad: bool, hasAny: bool, lastReaction: 'good'/'bad'? }
+    feedingEntries.forEach(entry => {
+      const nameNorm = entry.product.trim().toLowerCase();
+      if (!nameNorm) return;
+      if (!map.has(nameNorm)) map.set(nameNorm, { hasBad: false, hasAny: false });
+      const status = map.get(nameNorm);
+      status.hasAny = true;
+      if (entry.reaction === 'bad') status.hasBad = true;
+    });
+    return map;
   }
 
-  function updateStatistics() {
-    const todayStr = getTodayDateString();
-    const todayEntries = feedingEntries.filter(e => e.date === todayStr);
-    statsArea.innerHTML = `<div class="stat-badge"><i class="fas fa-calendar-day"></i> Сегодня: ${todayEntries.length}</div>
-                           <div class="stat-badge"><i class="fas fa-database"></i> Всего: ${feedingEntries.length}</div>`;
+  // отрисовка справочной таблицы на основе карты статусов
+  function renderProductCatalog() {
+    const statusMap = getProductStatusMap();
+    let html = '';
+    for (let item of productCatalog) {
+      const productNorm = item.product.toLowerCase();
+      const status = statusMap.get(productNorm);
+      let statusHtml = '';
+      if (!status || !status.hasAny) {
+        statusHtml = `<span class="status-badge status-not"><i class="fas fa-minus-circle"></i> Не введён</span>`;
+      } else if (status.hasBad) {
+        statusHtml = `<span class="status-badge status-introduced-bad"><i class="fas fa-exclamation-triangle"></i> Введён (плохая реакция)</span>`;
+      } else {
+        statusHtml = `<span class="status-badge status-introduced-ok"><i class="fas fa-check-circle"></i> Введён (реакция хорошая)</span>`;
+      }
+      html += `<tr>
+        <td>${escapeHtml(item.category)}</td>
+        <td><strong>${escapeHtml(item.product)}</strong></td>
+        <td>${escapeHtml(item.timeIntro)}</td>
+        <td>${statusHtml}</td>
+      </tr>`;
+    }
+    catalogTableBody.innerHTML = html;
   }
 
-  // Генерация списка продуктов (можно / нельзя)
+  // обновление сводки (можно/нельзя) - как было
   function updateProductsSummary() {
-    const productMap = new Map(); // key: product name (lowercase) -> { goodCount, badCount, originalName }
+    const productMap = new Map();
     feedingEntries.forEach(entry => {
       const name = entry.product.trim();
       if (!name) return;
       const key = name.toLowerCase();
-      if (!productMap.has(key)) productMap.set(key, { goodCount: 0, badCount: 0, originalName: name });
-      const item = productMap.get(key);
-      if (entry.reaction === 'good') item.goodCount++;
-      else item.badCount++;
+      if (!productMap.has(key)) productMap.set(key, { goodCount:0, badCount:0, originalName: name });
+      const data = productMap.get(key);
+      if (entry.reaction === 'good') data.goodCount++;
+      else data.badCount++;
     });
-    const goodProducts = [];
-    const badProducts = [];
+    const goodProducts = [], badProducts = [];
     for (let [_, data] of productMap.entries()) {
       if (data.badCount > 0) badProducts.push(data.originalName);
       else if (data.goodCount > 0) goodProducts.push(data.originalName);
@@ -511,43 +605,42 @@
     badProducts.sort((a,b)=>a.localeCompare(b));
     let html = `<div class="product-category"><h4><i class="fas fa-check-circle" style="color:#2b7a4b;"></i> Можно (нет плохой реакции)</h4>`;
     if (goodProducts.length) html += `<div>${goodProducts.map(p => `<span class="product-tag good">${escapeHtml(p)}</span>`).join('')}</div>`;
-    else html += `<div class="empty-state" style="padding:12px; font-size:0.8rem;">Пока нет продуктов с хорошей реакцией</div>`;
+    else html += `<div class="empty-state" style="padding:12px;">Нет продуктов с хорошей реакцией</div>`;
     html += `</div><div class="product-category"><h4><i class="fas fa-exclamation-triangle" style="color:#c46b5e;"></i> Нельзя (была плохая реакция)</h4>`;
     if (badProducts.length) html += `<div>${badProducts.map(p => `<span class="product-tag bad">${escapeHtml(p)}</span>`).join('')}</div>`;
-    else html += `<div class="empty-state" style="padding:12px; font-size:0.8rem;">Нет запрещённых продуктов</div>`;
+    else html += `<div class="empty-state" style="padding:12px;">Нет запрещённых продуктов</div>`;
     html += `</div>`;
     productsSummaryDiv.innerHTML = html;
   }
 
+  // фильтрация и рендер списка записей
   function getFilteredSortedEntries() {
     let filtered = [...feedingEntries];
     if (currentFilter === "today") filtered = filtered.filter(e => e.date === getTodayDateString());
     filtered.sort((a,b) => (b.date + "T" + b.time).localeCompare(a.date + "T" + a.time));
     return filtered;
   }
-
   function renderFeedList() {
     const list = getFilteredSortedEntries();
     if (!list.length) {
-      entriesContainer.innerHTML = `<div class="empty-state"><i class="fas fa-info-circle"></i> ${currentFilter === "today" ? "Сегодня нет записей" : "Нет записей о прикорме"}</div>`;
+      entriesContainer.innerHTML = `<div class="empty-state"><i class="fas fa-info-circle"></i> ${currentFilter === "today" ? "Сегодня нет записей" : "Нет записей"}</div>`;
       return;
     }
     entriesContainer.innerHTML = list.map(entry => {
-      const reactionClass = entry.reaction === 'good' ? 'reaction-good' : 'reaction-bad';
-      const reactionIcon = entry.reaction === 'good' ? '<i class="fas fa-smile-wink"></i>' : '<i class="fas fa-frown"></i>';
-      const reactionText = entry.reaction === 'good' ? 'хорошо' : 'плохо';
+      const rc = entry.reaction === 'good' ? 'reaction-good' : 'reaction-bad';
+      const ric = entry.reaction === 'good' ? '<i class="fas fa-smile-wink"></i>' : '<i class="fas fa-frown"></i>';
       return `
         <div class="meal-item" data-id="${entry.id}">
           <div class="meal-info">
             <span class="meal-time">${escapeHtml(entry.time)}</span>
             <span class="meal-product">${escapeHtml(entry.product)}</span>
             ${(entry.amount && entry.amount>0) ? `<span class="meal-amount">${entry.amount} ${entry.unit}</span>` : ''}
-            <span class="reaction-badge ${reactionClass}">${reactionIcon} ${reactionText}</span>
+            <span class="reaction-badge ${rc}">${ric} ${entry.reaction === 'good' ? 'хорошо' : 'плохо'}</span>
             <span class="meal-date">${formatDisplayDate(entry.date)}</span>
           </div>
           <div class="meal-actions">
-            <span class="action-icon edit-action" data-id="${entry.id}" title="Редактировать"><i class="fas fa-pen"></i></span>
-            <span class="action-icon delete" data-id="${entry.id}" title="Удалить"><i class="fas fa-trash-can"></i></span>
+            <span class="action-icon edit-action" data-id="${entry.id}"><i class="fas fa-pen"></i></span>
+            <span class="action-icon delete" data-id="${entry.id}"><i class="fas fa-trash-can"></i></span>
           </div>
         </div>
       `;
@@ -570,42 +663,30 @@
     cancelEditBtn.style.display = 'inline-flex';
     document.querySelector('.card').scrollIntoView({ behavior: 'smooth' });
   }
-
   function addNewEntry() {
-    const dateVal = dateInput.value;
-    const timeVal = timeInput.value;
-    const productVal = productInput.value.trim();
+    const dateVal = dateInput.value, timeVal = timeInput.value, productVal = productInput.value.trim();
     let amountVal = parseFloat(amountInput.value);
-    const unitVal = unitSelect.value;
-    const reactionVal = getSelectedReaction();
+    const unitVal = unitSelect.value, reactionVal = getSelectedReaction();
     if (!dateVal || !timeVal || !productVal) { alert("Заполните дату, время и продукт"); return; }
-    if (isNaN(amountVal) || amountVal < 0) amountVal = 0;
-    const newEntry = { id: Date.now(), date: dateVal, time: timeVal, product: productVal, amount: amountVal, unit: unitVal, reaction: reactionVal };
-    feedingEntries.push(newEntry);
+    if (isNaN(amountVal)) amountVal = 0;
+    feedingEntries.push({ id: Date.now(), date: dateVal, time: timeVal, product: productVal, amount: amountVal, unit: unitVal, reaction: reactionVal });
     persistData();
     resetFormAndEditing();
     renderAllAndStats();
   }
-
   function updateCurrentEntry() {
     if (!currentEditId) return;
-    const dateVal = dateInput.value;
-    const timeVal = timeInput.value;
-    const productVal = productInput.value.trim();
+    const dateVal = dateInput.value, timeVal = timeInput.value, productVal = productInput.value.trim();
     let amountVal = parseFloat(amountInput.value);
-    const unitVal = unitSelect.value;
-    const reactionVal = getSelectedReaction();
+    const unitVal = unitSelect.value, reactionVal = getSelectedReaction();
     if (!dateVal || !timeVal || !productVal) { alert("Заполните дату, время и продукт"); return; }
-    if (isNaN(amountVal) || amountVal < 0) amountVal = 0;
+    if (isNaN(amountVal)) amountVal = 0;
     const index = feedingEntries.findIndex(e => e.id === currentEditId);
-    if (index !== -1) {
-      feedingEntries[index] = { ...feedingEntries[index], date: dateVal, time: timeVal, product: productVal, amount: amountVal, unit: unitVal, reaction: reactionVal };
-      persistData();
-    }
+    if (index !== -1) feedingEntries[index] = { ...feedingEntries[index], date: dateVal, time: timeVal, product: productVal, amount: amountVal, unit: unitVal, reaction: reactionVal };
+    persistData();
     resetFormAndEditing();
     renderAllAndStats();
   }
-
   function deleteEntryById(id) {
     if (confirm("Удалить запись?")) {
       feedingEntries = feedingEntries.filter(e => e.id !== id);
@@ -614,11 +695,7 @@
       renderAllAndStats();
     }
   }
-
-  function clearAllData() {
-    if (confirm("Удалить ВСЕ записи?")) { feedingEntries = []; persistData(); resetFormAndEditing(); renderAllAndStats(); }
-  }
-
+  function clearAllData() { if (confirm("Удалить ВСЕ записи?")) { feedingEntries = []; persistData(); resetFormAndEditing(); renderAllAndStats(); } }
   function resetFormAndEditing() {
     currentEditId = null;
     dateInput.value = getTodayDateString();
@@ -630,28 +707,36 @@
     submitBtn.innerHTML = '<i class="fas fa-save"></i> Добавить';
     cancelEditBtn.style.display = 'none';
   }
-
   function setFilter(mode) {
     currentFilter = mode;
     if (mode === "today") { filterTodayBtn.classList.add("active"); filterAllBtn.classList.remove("active"); }
     else { filterAllBtn.classList.add("active"); filterTodayBtn.classList.remove("active"); }
     renderFeedList();
   }
-
+  function updateStatistics() {
+    const todayCount = feedingEntries.filter(e => e.date === getTodayDateString()).length;
+    statsArea.innerHTML = `<div class="stat-badge"><i class="fas fa-calendar-day"></i> Сегодня: ${todayCount}</div><div class="stat-badge"><i class="fas fa-database"></i> Всего: ${feedingEntries.length}</div>`;
+  }
   function renderAllAndStats() {
     updateStatistics();
     updateProductsSummary();
     renderFeedList();
+    renderProductCatalog(); // обновляем таблицу справочника
   }
-
   function bindEvents() {
     submitBtn.onclick = () => { if (currentEditId !== null) updateCurrentEntry(); else addNewEntry(); };
     cancelEditBtn.onclick = resetFormAndEditing;
     clearAllBtn.onclick = clearAllData;
     filterTodayBtn.onclick = () => setFilter("today");
     filterAllBtn.onclick = () => setFilter("all");
+    // аккордеон
+    accordionHeader.addEventListener('click', () => {
+      accordionContent.classList.toggle('open');
+      accordionIcon.classList.toggle('fa-chevron-down');
+      accordionIcon.classList.toggle('fa-chevron-up');
+    });
   }
-
+  function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
   function init() {
     loadInitialData();
     dateInput.value = getTodayDateString();
@@ -661,7 +746,6 @@
     setFilter("today");
     renderAllAndStats();
   }
-  function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
   init();
 </script>
 </body>
